@@ -633,7 +633,7 @@ export class AINotificationService {
     this.updateUserBehavior(notificationId, action, timestamp);
   }
 
-  private updateUserBehavior(notificationId: string, action: string, timestamp: Date) {
+  private updateUserBehavior(_notificationId: string, _action: string, _timestamp: Date) {
     // Update user behavior patterns based on actions
     // This would normally integrate with an ML service
   }
