@@ -36,7 +36,7 @@ import VideoCall from "../components/pages/application-modules/application/calls
 import VoiceCalls from "../components/pages/application-modules/application/calls/voiceCall";
 import Chat from "../components/pages/application-modules/application/chat/chat";
 import Contacts from "../components/pages/application-modules/application/contacts/contacts";
-import Email from "../components/pages/application-modules/application/email/email";
+import UnifiedEmail from "../components/pages/application-modules/application/email/unified-email";
 import FileManager from "../components/pages/application-modules/application/file-manager/fileManager";
 import AddInoivce from "../components/pages/application-modules/application/invoice/add-invoice/addInoivce";
 import Invoice from "../components/pages/application-modules/application/invoice/invoice";
