@@ -414,7 +414,7 @@ export const publicRoutes = [
   },
   {
     path: routes.chat,
-    element: <Chat />,
+    element: <UnifiedChat />,
     route: Route,
   },
   {
