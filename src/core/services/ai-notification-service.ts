@@ -85,10 +85,20 @@ export class AINotificationService {
   private userBehavior: UserBehaviorData;
   private isProcessing: boolean = false;
   private cache: Map<string, AIEnhancedNotification[]> = new Map();
+  private settings: AISettings;
 
   constructor() {
     // Initialize with default user behavior data
     this.userBehavior = this.loadUserBehaviorData();
+    this.settings = {
+      maxNotifications: 50,
+      enableGrouping: true,
+      enableSmartPrioritization: true,
+      confidenceThreshold: 0.7,
+      autoProcessing: true,
+      refreshInterval: 30000,
+      enableAnalytics: true
+    };
   }
 
   /**
