@@ -685,7 +685,7 @@ const AIOnboardingWorkflow: React.FC = () => {
         <Steps current={state.currentStep} size="small">
           {onboardingSteps.map((step, index) => (
             <Step
-              key={index}
+              key={`step-${step.id}-${index}`}
               title={step.title}
               description={step.estimated_time}
               status={
@@ -844,7 +844,7 @@ export const DailyManagementWorkflow: React.FC = () => {
         <Card title={workflows[activeWorkflow as keyof typeof workflows].title}>
           <div className="workflow-steps">
             {workflows[activeWorkflow as keyof typeof workflows].steps.map((step, index) => (
-              <div key={index} className="workflow-step d-flex align-items-start mb-3">
+              <div key={`workflow-${activeWorkflow}-step-${index}-${step.slice(0, 10)}`} className="workflow-step d-flex align-items-start mb-3">
                 <div className={`step-number bg-${workflows[activeWorkflow as keyof typeof workflows].color} text-white rounded-circle d-flex align-items-center justify-content-center me-3`} style={{ width: '32px', height: '32px', fontSize: '0.875rem' }}>
                   {index + 1}
                 </div>
