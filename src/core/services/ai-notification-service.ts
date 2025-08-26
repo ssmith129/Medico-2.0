@@ -3,6 +3,24 @@
  * Handles intelligent notification processing, prioritization, and grouping
  */
 
+export interface NotificationInput {
+  id: string;
+  title: string;
+  message: string;
+  avatar?: string;
+  timestamp: Date;
+  isRead: boolean;
+  type: 'appointment' | 'medical' | 'system' | 'urgent' | 'reminder';
+  sender: string;
+  metadata?: {
+    patientId?: string;
+    doctorId?: string;
+    priority?: number;
+    category?: string;
+    relatedTo?: string[];
+  };
+}
+
 interface NotificationData {
   id: string;
   title: string;
