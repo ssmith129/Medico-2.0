@@ -773,7 +773,7 @@ const AIEnhancedEmail = () => {
                                   {email.aiClassification.tags.length > 0 && (
                                     <div className="d-flex gap-1 mt-1 flex-wrap">
                                       {email.aiClassification.tags.slice(0, 3).map((tag, index) => (
-                                        <span key={index} className="badge bg-light text-dark fs-10">
+                                        <span key={`${email.id}-tag-${tag}-${index}`} className="badge bg-light text-dark fs-10">
                                           {tag}
                                         </span>
                                       ))}
