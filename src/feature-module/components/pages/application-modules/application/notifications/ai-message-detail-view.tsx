@@ -50,7 +50,7 @@ interface RelatedMessage {
 
 const AIMessageDetailView: React.FC = () => {
   const { messageId } = useParams<{ messageId: string }>();
-  const [message, setMessage] = useState<AIEnhancedNotification | null>(null);
+  const [message, setMessage] = useState<ProcessedNotification | null>(null);
   const [aiAnalysis, setAiAnalysis] = useState<AIAnalysisDetails | null>(null);
   const [timeline, setTimeline] = useState<MessageTimeline[]>([]);
   const [relatedMessages, setRelatedMessages] = useState<RelatedMessage[]>([]);
@@ -61,7 +61,7 @@ const AIMessageDetailView: React.FC = () => {
   const [feedbackComment, setFeedbackComment] = useState('');
 
   // Mock detailed message data
-  const mockDetailedMessage: AIEnhancedNotification = {
+  const mockDetailedMessage: ProcessedNotification = {
     id: messageId || "detailed-1",
     title: "Emergency Protocol Activation - ICU Room 302",
     message: "Code Blue activated in ICU Room 302. Patient John Doe (Age: 67, Bed 302-A) showing signs of cardiac arrest. Vital signs: HR 0, BP undetectable, O2 Sat 89%. Immediate resuscitation team required. Dr. Sarah Chen is the attending physician. Patient has history of coronary artery disease and diabetes. Emergency contact: Mary Doe (spouse) - 555-0123. Last medication administered: Metoprolol 25mg at 14:30. Current time: 15:45.",
