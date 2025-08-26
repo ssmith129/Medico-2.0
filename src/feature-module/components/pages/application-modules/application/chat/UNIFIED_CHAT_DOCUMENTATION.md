@@ -559,9 +559,9 @@ CREATE TABLE ai_analytics (
 
 ### Support Contacts
 
-- **Technical Issues**: [tech-support@preclinic.com](mailto:tech-support@preclinic.com)
-- **AI/ML Issues**: [ai-support@preclinic.com](mailto:ai-support@preclinic.com)
-- **User Training**: [training@preclinic.com](mailto:training@preclinic.com)
+- **Technical Issues**: [tech-support@symplify.com](mailto:tech-support@symplify.com)
+- **AI/ML Issues**: [ai-support@symplify.com](mailto:ai-support@symplify.com)
+- **User Training**: [training@symplify.com](mailto:training@symplify.com)
 
 ---
 
