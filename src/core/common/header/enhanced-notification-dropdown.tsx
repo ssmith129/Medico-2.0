@@ -195,12 +195,13 @@ const EnhancedNotificationDropdown: React.FC<EnhancedNotificationDropdownProps> 
     getNotificationsByType
   } = useAINotifications({
     settings: {
-      enabled: isAIEnabled,
-      roleBasedFiltering: {
-        enabled: true,
-        userRoles: [userRole],
-        departmentFilter: department !== 'general' ? [department] : []
-      }
+      maxNotifications: 50,
+      enableGrouping: true,
+      enableSmartPrioritization: true,
+      confidenceThreshold: 0.7,
+      autoProcessing: true,
+      refreshInterval: 30000,
+      enableAnalytics: true
     },
     autoRefresh: true,
     refreshInterval: 30000
