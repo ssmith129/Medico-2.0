@@ -440,9 +440,9 @@ export class AINotificationService {
    */
   private calculatePersonalizedTiming(notification: NotificationData) {
     const currentHour = new Date().getHours();
-    const isActiveHour = this.userBehavior.activeHours.includes(currentHour);
-    
-    const avgResponseTime = this.userBehavior.averageResponseTime[notification.type] || 60;
+    // const isActiveHour = this.userBehavior.activeHours.includes(currentHour);
+
+    // const avgResponseTime = this.userBehavior.averageResponseTime[notification.type] || 60;
     const userEngagement = this.userBehavior.clickThroughRates[notification.type] || 0.5;
 
     return {
