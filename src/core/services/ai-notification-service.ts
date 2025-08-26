@@ -12,13 +12,7 @@ export interface NotificationInput {
   isRead: boolean;
   type: 'appointment' | 'medical' | 'system' | 'urgent' | 'reminder';
   sender: string;
-  metadata?: {
-    patientId?: string;
-    doctorId?: string;
-    priority?: number;
-    category?: string;
-    relatedTo?: string[];
-  };
+  metadata?: Record<string, any>;
 }
 
 interface NotificationData {
