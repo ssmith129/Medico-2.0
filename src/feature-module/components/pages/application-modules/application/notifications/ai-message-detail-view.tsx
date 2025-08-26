@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router';
 import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
 import { Badge, Progress, Card, Timeline, Tabs, Alert, Rate, Tooltip, Modal } from 'antd';
-import { aiNotificationService } from '../../../../../../core/services/ai-notification-service';
-import type { AIEnhancedNotification } from '../../../../../../core/services/ai-notification-service';
+import type { ProcessedNotification } from '../../../../../../core/services/ai-notification-service';
 
 const { TabPane } = Tabs;
 
@@ -362,7 +361,7 @@ const AIMessageDetailView: React.FC = () => {
               AI Recommended Actions
             </h6>
             <div className="d-flex gap-2 flex-wrap">
-              {message.suggestedActions.map((action, index) => (
+              {message.suggestedActions.map((action: any, index: number) => (
                 <button
                   key={`${message.id}-action-${action.action}-${index}`}
                   className={`btn btn-${action.type} btn-sm`}
@@ -467,7 +466,7 @@ const AIMessageDetailView: React.FC = () => {
                   <div className="feedback-section">
                     <div className="text-center mb-3">
                       <Rate
-                        value={userFeedback}
+                        value={userFeedback || 0}
                         onChange={setUserFeedback}
                         allowHalf
                         character={<i className="ti ti-star-filled"></i>}
