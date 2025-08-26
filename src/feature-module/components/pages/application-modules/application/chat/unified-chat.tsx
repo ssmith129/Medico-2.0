@@ -742,7 +742,7 @@ const UnifiedChat: React.FC = () => {
                                             <div className="d-flex gap-1 flex-wrap">
                                               {message.aiEnhanced.suggestedActions.map((action, index) => (
                                                 <button
-                                                  key={index}
+                                                  key={`${message.id}-action-${action.action}-${index}`}
                                                   className={`btn btn-${action.type} btn-sm fs-11`}
                                                   onClick={() => handleAIAction(action.action, message.id)}
                                                 >
