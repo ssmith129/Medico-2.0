@@ -249,7 +249,7 @@ const IncomeList = () => {
           <p className="text-dark mb-0">
             2025 ©{" "}
             <Link to="#" className="link-primary">
-              Preclinic
+              Symplify
             </Link>
             , All Rights Reserved
           </p>
