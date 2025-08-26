@@ -34,7 +34,7 @@ import IncomingCall from "../components/pages/application-modules/application/ca
 import OutGoingCall from "../components/pages/application-modules/application/calls/outGoingCall";
 import VideoCall from "../components/pages/application-modules/application/calls/videoCall";
 import VoiceCalls from "../components/pages/application-modules/application/calls/voiceCall";
-import Chat from "../components/pages/application-modules/application/chat/chat";
+import UnifiedChat from "../components/pages/application-modules/application/chat/unified-chat";
 import Contacts from "../components/pages/application-modules/application/contacts/contacts";
 import UnifiedEmail from "../components/pages/application-modules/application/email/unified-email";
 import FileManager from "../components/pages/application-modules/application/file-manager/fileManager";
