@@ -39,10 +39,11 @@ interface NotificationData {
   };
 }
 
-interface AIEnhancedNotification extends NotificationData {
+export interface ProcessedNotification extends NotificationData {
   // AI enhancements
   aiPriority: number; // 1-5 scale (5 being highest)
   aiCategory: 'critical' | 'important' | 'routine' | 'informational';
+  category: 'critical' | 'important' | 'routine' | 'informational'; // Alias for aiCategory
   aiSummary?: string; // Shortened version for long notifications
   suggestedActions?: Array<{
     label: string;
@@ -59,6 +60,8 @@ interface AIEnhancedNotification extends NotificationData {
   };
   confidence: number; // AI confidence score 0-1
 }
+
+interface AIEnhancedNotification extends ProcessedNotification {}
 
 interface UserBehaviorData {
   averageResponseTime: { [key: string]: number };
