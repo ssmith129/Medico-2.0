@@ -31,11 +31,11 @@ interface FlagConfig {
 }
 
 interface VisualFlagsProps {
-  notification: AIEnhancedNotification;
+  notification: ProcessedNotification;
   compact?: boolean;
   showTooltips?: boolean;
   customFlags?: FlagConfig[];
-  onFlagClick?: (flag: FlagConfig, notification: AIEnhancedNotification) => void;
+  onFlagClick?: (flag: FlagConfig, notification: ProcessedNotification) => void;
   size?: 'small' | 'medium' | 'large';
 }
 
@@ -477,7 +477,7 @@ const AIVisualFlags: React.FC<VisualFlagsProps> = ({
 
 // Flag Summary Component - shows all flags for a set of notifications
 interface FlagSummaryProps {
-  notifications: AIEnhancedNotification[];
+  notifications: ProcessedNotification[];
   title?: string;
 }
 
