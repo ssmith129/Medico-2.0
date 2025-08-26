@@ -1,598 +1,569 @@
-interface NotificationInput {
+/**
+ * AI-Enhanced Notification Service
+ * Handles intelligent notification processing, prioritization, and grouping
+ */
+
+interface NotificationData {
   id: string;
   title: string;
-  description: string;
-  sender: string;
-  senderRole: string;
+  message: string;
+  avatar?: string;
   timestamp: Date;
+  isRead: boolean;
+  type: 'appointment' | 'medical' | 'system' | 'urgent' | 'reminder';
+  sender: string;
   metadata?: {
     patientId?: string;
     doctorId?: string;
-    appointmentId?: string;
-    labResultId?: string;
-    urgencyKeywords?: string[];
-    medicalTerms?: string[];
-    [key: string]: any;
-  };
-  rawContent?: string;
-}
-
-interface ProcessedNotification extends NotificationInput {
-  type: 'critical' | 'urgent' | 'routine' | 'system';
-  category: 'appointment' | 'medical' | 'administrative' | 'emergency' | 'reminder';
-  aiPriority: number; // 1-5 scale
-  aiConfidence: number; // 0-1 scale
-  aiInsight?: string;
-  actionSuggested?: boolean;
-  actionType?: 'accept' | 'review' | 'respond' | 'acknowledge';
-  groupId?: string;
-  isGroupable: boolean;
-  suggestedRole: string[];
-  urgencyScore: number;
-  medicalRelevanceScore: number;
-  timeRelevanceScore: number;
-}
-
-interface AISettings {
-  enabled: boolean;
-  priorityWeight: number;
-  categoryWeights: {
-    emergency: number;
-    medical: number;
-    appointment: number;
-    administrative: number;
-    reminder: number;
-  };
-  smartGrouping: boolean;
-  groupSimilarThreshold: number;
-  roleBasedFiltering: {
-    enabled: boolean;
-    userRoles: string[];
-    departmentFilter: string[];
-  };
-  learningMode: {
-    enabled: boolean;
-    adaptToBehavior: boolean;
+    priority?: number;
+    category?: string;
+    relatedTo?: string[];
   };
 }
 
-class AINotificationService {
-  private settings: AISettings;
-  private medicalKeywords: { [key: string]: number };
-  private urgencyKeywords: { [key: string]: number };
-  private actionKeywords: { [key: string]: string };
-  private userBehaviorData: { [key: string]: any };
+interface AIEnhancedNotification extends NotificationData {
+  // AI enhancements
+  aiPriority: number; // 1-5 scale (5 being highest)
+  aiCategory: 'critical' | 'important' | 'routine' | 'informational';
+  aiSummary?: string; // Shortened version for long notifications
+  suggestedActions?: Array<{
+    label: string;
+    action: string;
+    type: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  }>;
+  groupId?: string; // For grouping similar notifications
+  groupCount?: number; // How many notifications in this group
+  isGrouped?: boolean;
+  personalizedTiming?: {
+    optimalTime?: Date;
+    frequencyScore?: number;
+    userEngagement?: number;
+  };
+  confidence: number; // AI confidence score 0-1
+}
 
-  constructor(settings: AISettings) {
-    this.settings = settings;
-    this.initializeKeywords();
-    this.userBehaviorData = this.loadUserBehaviorData();
+interface UserBehaviorData {
+  averageResponseTime: { [key: string]: number };
+  preferredCategories: string[];
+  activeHours: number[];
+  clickThroughRates: { [key: string]: number };
+  dismissalPatterns: { [key: string]: number };
+}
+
+export class AINotificationService {
+  private userBehavior: UserBehaviorData;
+  private isProcessing: boolean = false;
+  private cache: Map<string, AIEnhancedNotification[]> = new Map();
+
+  constructor() {
+    // Initialize with default user behavior data
+    this.userBehavior = this.loadUserBehaviorData();
   }
 
-  private initializeKeywords() {
-    // Medical urgency keywords with weight scores
-    this.medicalKeywords = {
-      'emergency': 10,
-      'critical': 10,
-      'urgent': 9,
-      'stat': 9,
-      'immediate': 9,
-      'cardiac': 8,
-      'stroke': 8,
-      'bleeding': 8,
-      'unconscious': 8,
-      'respiratory': 7,
-      'pain': 6,
-      'abnormal': 6,
-      'elevated': 5,
-      'concern': 4,
-      'follow-up': 3,
-      'routine': 2,
-      'scheduled': 2,
-      'reminder': 1
-    };
+  /**
+   * Process notifications with AI enhancements
+   */
+  async processNotifications(
+    notifications: NotificationData[]
+  ): Promise<AIEnhancedNotification[]> {
+    this.isProcessing = true;
+    
+    try {
+      // Apply AI processing to each notification
+      const enhanced = await Promise.all(
+        notifications.map(notification => this.enhanceNotification(notification))
+      );
 
-    // General urgency indicators
-    this.urgencyKeywords = {
-      'asap': 9,
-      'immediately': 9,
-      'now': 8,
-      'urgent': 8,
-      'priority': 7,
-      'important': 6,
-      'attention': 5,
-      'please': 4,
-      'when possible': 2,
-      'convenient': 1
-    };
+      // Apply intelligent grouping
+      const grouped = this.intelligentGrouping(enhanced);
 
-    // Action suggestion keywords
-    this.actionKeywords = {
-      'book': 'accept',
-      'schedule': 'accept',
-      'confirm': 'accept',
-      'approve': 'accept',
-      'review': 'review',
-      'check': 'review',
-      'examine': 'review',
-      'contact': 'respond',
-      'call': 'respond',
-      'notify': 'respond',
-      'acknowledge': 'acknowledge',
-      'received': 'acknowledge'
-    };
+      // Apply smart prioritization
+      const prioritized = this.smartPrioritization(grouped);
+
+      // Cache results for performance
+      this.cache.set('processed', prioritized);
+
+      return prioritized;
+    } catch (error) {
+      console.error('AI processing failed:', error);
+      // Fallback to basic processing
+      return this.fallbackProcessing(notifications);
+    } finally {
+      this.isProcessing = false;
+    }
   }
 
-  private loadUserBehaviorData(): { [key: string]: any } {
-    // In a real implementation, this would load from user behavior analytics
+  /**
+   * Enhance individual notification with AI features
+   */
+  private async enhanceNotification(
+    notification: NotificationData
+  ): Promise<AIEnhancedNotification> {
+    // Calculate AI priority based on multiple factors
+    const aiPriority = this.calculatePriority(notification);
+    
+    // Determine AI category
+    const aiCategory = this.categorizeNotification(notification);
+    
+    // Generate AI summary for long messages
+    const aiSummary = this.generateSummary(notification.message);
+    
+    // Suggest actions based on notification type and content
+    const suggestedActions = this.generateSuggestedActions(notification);
+    
+    // Calculate personalized timing
+    const personalizedTiming = this.calculatePersonalizedTiming(notification);
+    
+    // Calculate AI confidence
+    const confidence = this.calculateConfidence(notification);
+
     return {
-      avgResponseTimeByCategory: {
-        emergency: 2, // minutes
-        medical: 15,
-        appointment: 60,
-        administrative: 240,
-        reminder: 1440
-      },
-      preferredNotificationTimes: [8, 9, 10, 11, 14, 15, 16], // hours
-      interactionPatterns: {
-        quickDismiss: ['reminder', 'routine administrative'],
-        immediateAction: ['emergency', 'critical medical'],
-        scheduledReview: ['appointment', 'medical reports']
-      },
-      categoryEngagement: {
-        emergency: 0.95,
-        medical: 0.85,
-        appointment: 0.75,
-        administrative: 0.45,
-        reminder: 0.30
-      }
-    };
-  }
-
-  public processNotification(notification: NotificationInput): ProcessedNotification {
-    if (!this.settings.enabled) {
-      return this.createBasicProcessedNotification(notification);
-    }
-
-    const urgencyScore = this.calculateUrgencyScore(notification);
-    const medicalRelevanceScore = this.calculateMedicalRelevance(notification);
-    const timeRelevanceScore = this.calculateTimeRelevance(notification);
-    
-    const category = this.categorizeNotification(notification, urgencyScore, medicalRelevanceScore);
-    const type = this.determineNotificationType(urgencyScore, medicalRelevanceScore, category);
-    const aiPriority = this.calculateAIPriority(urgencyScore, medicalRelevanceScore, timeRelevanceScore, category);
-    
-    const aiInsight = this.generateAIInsight(notification, category, type, urgencyScore);
-    const actionSuggestion = this.suggestAction(notification, category, type);
-    const suggestedRoles = this.determineSuggestedRoles(notification, category);
-    
-    const processed: ProcessedNotification = {
       ...notification,
-      type,
-      category,
       aiPriority,
-      aiConfidence: this.calculateConfidence(urgencyScore, medicalRelevanceScore),
-      aiInsight,
-      actionSuggested: actionSuggestion.suggested,
-      actionType: actionSuggestion.type,
-      isGroupable: this.isGroupable(notification, category),
-      suggestedRole: suggestedRoles,
-      urgencyScore,
-      medicalRelevanceScore,
-      timeRelevanceScore
+      aiCategory,
+      aiSummary,
+      suggestedActions,
+      personalizedTiming,
+      confidence
     };
-
-    if (this.settings.smartGrouping && processed.isGroupable) {
-      processed.groupId = this.generateGroupId(processed);
-    }
-
-    return processed;
   }
 
-  private calculateUrgencyScore(notification: NotificationInput): number {
-    let score = 0;
-    const content = `${notification.title} ${notification.description}`.toLowerCase();
-
-    // Check for urgency keywords
-    Object.entries(this.urgencyKeywords).forEach(([keyword, weight]) => {
-      if (content.includes(keyword)) {
-        score += weight;
-      }
-    });
-
-    // Check for medical urgency
-    Object.entries(this.medicalKeywords).forEach(([keyword, weight]) => {
-      if (content.includes(keyword)) {
-        score += weight;
-      }
-    });
+  /**
+   * Calculate notification priority using AI algorithms
+   */
+  private calculatePriority(notification: NotificationData): number {
+    let priority = 3; // Default medium priority
 
     // Time-based urgency
-    const now = new Date();
-    const notificationTime = new Date(notification.timestamp);
-    const timeDiff = now.getTime() - notificationTime.getTime();
-    const hoursOld = timeDiff / (1000 * 60 * 60);
-
-    if (hoursOld < 0.5) score += 3; // Very recent
-    else if (hoursOld < 2) score += 2; // Recent
-    else if (hoursOld > 24) score -= 2; // Old notification
-
-    // Sender role weight
-    const senderRole = notification.senderRole?.toLowerCase();
-    if (senderRole === 'doctor' || senderRole === 'physician') score += 3;
-    else if (senderRole === 'nurse') score += 2;
-    else if (senderRole === 'emergency') score += 5;
-
-    // Metadata indicators
-    if (notification.metadata?.urgencyKeywords?.length) {
-      score += notification.metadata.urgencyKeywords.length * 2;
-    }
-
-    return Math.min(Math.max(score, 0), 50); // Normalize to 0-50
-  }
-
-  private calculateMedicalRelevance(notification: NotificationInput): number {
-    let score = 0;
-    const content = `${notification.title} ${notification.description}`.toLowerCase();
-
-    // Medical terms detection
-    const medicalTerms = [
-      'patient', 'diagnosis', 'treatment', 'medication', 'prescription',
-      'lab', 'test', 'result', 'vital', 'surgery', 'procedure',
-      'consultation', 'examination', 'symptom', 'condition',
-      'blood', 'pressure', 'heart', 'lung', 'brain', 'kidney'
-    ];
-
-    medicalTerms.forEach(term => {
-      if (content.includes(term)) score += 2;
-    });
-
-    // Medical metadata
-    if (notification.metadata?.patientId) score += 5;
-    if (notification.metadata?.doctorId) score += 3;
-    if (notification.metadata?.labResultId) score += 4;
-    if (notification.metadata?.medicalTerms?.length) {
-      score += notification.metadata.medicalTerms.length * 1.5;
-    }
-
-    // Medical department indicators
-    const medicalDepts = ['cardiology', 'emergency', 'icu', 'surgery', 'pediatrics'];
-    medicalDepts.forEach(dept => {
-      if (content.includes(dept)) score += 3;
-    });
-
-    return Math.min(Math.max(score, 0), 30); // Normalize to 0-30
-  }
-
-  private calculateTimeRelevance(notification: NotificationInput): number {
-    const now = new Date();
-    const notificationTime = new Date(notification.timestamp);
-    const hour = now.getHours();
+    const timeSinceCreation = Date.now() - notification.timestamp.getTime();
+    const hoursSince = timeSinceCreation / (1000 * 60 * 60);
     
-    let score = 10; // Base score
+    if (hoursSince < 1) priority += 1; // Recent notifications get higher priority
+    if (hoursSince > 24) priority -= 1; // Old notifications get lower priority
 
-    // Time of day relevance
-    if (this.userBehaviorData.preferredNotificationTimes.includes(hour)) {
-      score += 5;
-    }
-
-    // Night hours penalty (except for emergencies)
-    if (hour < 6 || hour > 22) {
-      const content = `${notification.title} ${notification.description}`.toLowerCase();
-      if (!content.includes('emergency') && !content.includes('critical')) {
-        score -= 8;
-      }
-    }
-
-    // Recency bonus
-    const timeDiff = now.getTime() - notificationTime.getTime();
-    const minutesOld = timeDiff / (1000 * 60);
+    // Content-based priority
+    const urgentKeywords = ['urgent', 'emergency', 'critical', 'stat', 'immediate'];
+    const messageContent = notification.message.toLowerCase();
     
-    if (minutesOld < 5) score += 5;
-    else if (minutesOld < 30) score += 3;
-    else if (minutesOld < 120) score += 1;
-    else if (minutesOld > 1440) score -= 5; // Older than a day
+    if (urgentKeywords.some(keyword => messageContent.includes(keyword))) {
+      priority += 2;
+    }
 
-    return Math.min(Math.max(score, 0), 20); // Normalize to 0-20
+    // Type-based priority
+    const typePriorities = {
+      'urgent': 5,
+      'medical': 4,
+      'appointment': 3,
+      'system': 2,
+      'reminder': 1
+    };
+    
+    priority = Math.max(priority, typePriorities[notification.type] || 3);
+
+    // User behavior adjustment
+    const userEngagement = this.userBehavior.clickThroughRates[notification.type] || 0.5;
+    priority = Math.round(priority * (0.5 + userEngagement));
+
+    // Ensure priority is within bounds
+    return Math.max(1, Math.min(5, priority));
   }
 
+  /**
+   * Categorize notification using AI
+   */
   private categorizeNotification(
-    notification: NotificationInput, 
-    urgencyScore: number, 
-    medicalRelevanceScore: number
-  ): ProcessedNotification['category'] {
-    const content = `${notification.title} ${notification.description}`.toLowerCase();
+    notification: NotificationData
+  ): 'critical' | 'important' | 'routine' | 'informational' {
+    const message = notification.message.toLowerCase();
+    const type = notification.type;
 
-    // Emergency indicators
-    if (urgencyScore > 25 || content.includes('emergency') || content.includes('critical')) {
-      return 'emergency';
-    }
-
-    // Medical category
-    if (medicalRelevanceScore > 15 || 
-        notification.metadata?.patientId || 
-        notification.metadata?.labResultId ||
-        content.includes('patient') || 
-        content.includes('medical')) {
-      return 'medical';
-    }
-
-    // Appointment category
-    if (content.includes('appointment') || 
-        content.includes('schedule') || 
-        content.includes('booking') ||
-        notification.metadata?.appointmentId) {
-      return 'appointment';
-    }
-
-    // Reminder category
-    if (content.includes('reminder') || 
-        content.includes('due') || 
-        content.includes('upcoming')) {
-      return 'reminder';
-    }
-
-    // Default to administrative
-    return 'administrative';
-  }
-
-  private determineNotificationType(
-    urgencyScore: number, 
-    medicalRelevanceScore: number, 
-    category: ProcessedNotification['category']
-  ): ProcessedNotification['type'] {
-    // Critical conditions
-    if (category === 'emergency' || urgencyScore > 30) {
+    // Critical indicators
+    if (
+      type === 'urgent' ||
+      message.includes('emergency') ||
+      message.includes('critical') ||
+      message.includes('stat')
+    ) {
       return 'critical';
     }
 
-    // Urgent conditions
-    if (urgencyScore > 20 || medicalRelevanceScore > 20 || 
-        (category === 'medical' && urgencyScore > 15)) {
-      return 'urgent';
+    // Important indicators
+    if (
+      type === 'medical' ||
+      message.includes('patient') ||
+      message.includes('doctor') ||
+      message.includes('surgery') ||
+      message.includes('appointment')
+    ) {
+      return 'important';
     }
 
-    // System notifications
-    if (category === 'administrative' && urgencyScore < 5) {
-      return 'system';
+    // Routine indicators
+    if (
+      type === 'appointment' ||
+      message.includes('scheduled') ||
+      message.includes('booked') ||
+      message.includes('completed')
+    ) {
+      return 'routine';
     }
 
-    // Default to routine
-    return 'routine';
+    return 'informational';
   }
 
-  private calculateAIPriority(
-    urgencyScore: number, 
-    medicalRelevanceScore: number, 
-    timeRelevanceScore: number, 
-    category: ProcessedNotification['category']
-  ): number {
-    let priority = 0;
+  /**
+   * Generate AI summary for long notifications
+   */
+  private generateSummary(message: string): string | undefined {
+    if (message.length <= 100) return undefined;
 
-    // Base score calculation
-    priority += urgencyScore * 0.5;
-    priority += medicalRelevanceScore * 0.3;
-    priority += timeRelevanceScore * 0.2;
+    // Simple AI summary algorithm
+    const sentences = message.split('.').filter(s => s.trim().length > 0);
+    if (sentences.length <= 1) return undefined;
 
-    // Category weight application
-    const categoryWeight = this.settings.categoryWeights[category] / 100;
-    priority *= categoryWeight;
+    // Extract key information
+    const keyWords = ['patient', 'doctor', 'appointment', 'surgery', 'emergency', 'completed', 'scheduled'];
+    const importantSentences = sentences.filter(sentence =>
+      keyWords.some(word => sentence.toLowerCase().includes(word))
+    );
 
-    // User behavior adjustment
-    if (this.settings.learningMode.enabled && this.settings.learningMode.adaptToBehavior) {
-      const engagementScore = this.userBehaviorData.categoryEngagement[category] || 0.5;
-      priority *= (0.7 + engagementScore * 0.3); // Adjust by engagement
+    if (importantSentences.length > 0) {
+      return importantSentences[0].trim() + '...';
     }
 
-    // Priority weight application
-    const aiWeight = this.settings.priorityWeight / 100;
-    priority = priority * aiWeight + (1 - aiWeight) * 2.5; // Blend with neutral score
-
-    // Normalize to 1-5 scale
-    return Math.min(Math.max(Math.round(priority / 10), 1), 5);
+    // Fallback to first sentence
+    return sentences[0].trim() + '...';
   }
 
-  private calculateConfidence(urgencyScore: number, medicalRelevanceScore: number): number {
-    // Higher scores generally mean higher confidence
-    const totalScore = urgencyScore + medicalRelevanceScore;
-    let confidence = 0.5; // Base confidence
+  /**
+   * Generate suggested actions based on notification content
+   */
+  private generateSuggestedActions(notification: NotificationData) {
+    const actions = [];
+    const message = notification.message.toLowerCase();
+    const type = notification.type;
 
-    if (totalScore > 40) confidence = 0.95;
-    else if (totalScore > 30) confidence = 0.85;
-    else if (totalScore > 20) confidence = 0.75;
-    else if (totalScore > 10) confidence = 0.65;
-
-    return confidence;
-  }
-
-  private generateAIInsight(
-    notification: NotificationInput, 
-    category: ProcessedNotification['category'], 
-    type: ProcessedNotification['type'], 
-    urgencyScore: number
-  ): string {
-    const insights = [];
-
-    if (type === 'critical') {
-      insights.push('Critical: Requires immediate medical intervention');
-      if (urgencyScore > 35) {
-        insights.push('within 10 minutes');
-      } else {
-        insights.push('within 30 minutes');
-      }
-    } else if (type === 'urgent') {
-      if (category === 'medical') {
-        insights.push('Medical attention needed: Contact patient within 2 hours');
-      } else if (category === 'appointment') {
-        insights.push('High impact: Affects multiple patients and schedules');
-      }
-    } else if (type === 'routine') {
-      if (category === 'appointment') {
-        insights.push('Routine booking cluster - can be processed in batch');
-      } else {
-        insights.push('Standard priority - process when convenient');
-      }
-    }
-
-    // Add behavior-based insights
-    if (this.settings.learningMode.enabled) {
-      const avgResponseTime = this.userBehaviorData.avgResponseTimeByCategory[category];
-      if (avgResponseTime < 30) {
-        insights.push('You typically respond to these quickly');
-      }
-    }
-
-    return insights.join('. ');
-  }
-
-  private suggestAction(
-    notification: NotificationInput, 
-    category: ProcessedNotification['category'], 
-    type: ProcessedNotification['type']
-  ): { suggested: boolean; type?: ProcessedNotification['actionType'] } {
-    const content = `${notification.title} ${notification.description}`.toLowerCase();
-
-    // Check for action keywords
-    for (const [keyword, actionType] of Object.entries(this.actionKeywords)) {
-      if (content.includes(keyword)) {
-        return { suggested: true, type: actionType as ProcessedNotification['actionType'] };
-      }
-    }
-
-    // Category-based suggestions
-    if (type === 'critical') {
-      return { suggested: true, type: 'respond' };
-    } else if (category === 'appointment') {
-      return { suggested: true, type: 'accept' };
-    } else if (category === 'medical' && type === 'urgent') {
-      return { suggested: true, type: 'review' };
-    }
-
-    return { suggested: false };
-  }
-
-  private determineSuggestedRoles(
-    notification: NotificationInput, 
-    category: ProcessedNotification['category']
-  ): string[] {
-    const roles = [];
-
-    switch (category) {
-      case 'emergency':
-        roles.push('doctor', 'nurse', 'emergency-staff');
-        break;
-      case 'medical':
-        roles.push('doctor', 'nurse');
-        break;
-      case 'appointment':
-        roles.push('admin', 'receptionist', 'doctor');
-        break;
-      case 'administrative':
-        roles.push('admin', 'manager');
-        break;
-      case 'reminder':
-        roles.push('all');
-        break;
-    }
-
-    // Filter based on user's role settings
-    if (this.settings.roleBasedFiltering.enabled) {
-      return roles.filter(role => 
-        this.settings.roleBasedFiltering.userRoles.includes(role) || role === 'all'
-      );
-    }
-
-    return roles;
-  }
-
-  private isGroupable(
-    notification: NotificationInput, 
-    category: ProcessedNotification['category']
-  ): boolean {
-    if (!this.settings.smartGrouping) return false;
-
-    // Emergency notifications are never grouped
-    if (category === 'emergency') return false;
-
-    // Routine appointments and reminders are groupable
-    return category === 'appointment' || category === 'reminder' || category === 'administrative';
-  }
-
-  private generateGroupId(notification: ProcessedNotification): string {
-    const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    return `${notification.category}-${date}`;
-  }
-
-  private createBasicProcessedNotification(notification: NotificationInput): ProcessedNotification {
-    return {
-      ...notification,
-      type: 'routine',
-      category: 'administrative',
-      aiPriority: 3,
-      aiConfidence: 0.5,
-      isGroupable: false,
-      suggestedRole: ['all'],
-      urgencyScore: 0,
-      medicalRelevanceScore: 0,
-      timeRelevanceScore: 10
-    };
-  }
-
-  public processMultipleNotifications(notifications: NotificationInput[]): ProcessedNotification[] {
-    const processed = notifications.map(notification => this.processNotification(notification));
-    
-    if (this.settings.smartGrouping) {
-      return this.applySmartGrouping(processed);
-    }
-    
-    return processed.sort((a, b) => b.aiPriority - a.aiPriority);
-  }
-
-  private applySmartGrouping(notifications: ProcessedNotification[]): ProcessedNotification[] {
-    const groups: { [key: string]: ProcessedNotification[] } = {};
-    const ungrouped: ProcessedNotification[] = [];
-
-    notifications.forEach(notification => {
-      if (notification.isGroupable && notification.groupId) {
-        if (!groups[notification.groupId]) {
-          groups[notification.groupId] = [];
-        }
-        groups[notification.groupId].push(notification);
-      } else {
-        ungrouped.push(notification);
-      }
+    // Common actions for all notifications
+    actions.push({
+      label: 'Mark as Read',
+      action: 'mark-read',
+      type: 'secondary' as const
     });
 
-    const result: ProcessedNotification[] = [...ungrouped];
+    // Type-specific actions
+    if (type === 'appointment' || message.includes('appointment')) {
+      actions.push({
+        label: 'View Details',
+        action: 'view-appointment',
+        type: 'primary' as const
+      });
+      
+      if (message.includes('booked') || message.includes('scheduled')) {
+        actions.push({
+          label: 'Confirm',
+          action: 'confirm-appointment',
+          type: 'success' as const
+        });
+      }
+    }
 
-    Object.entries(groups).forEach(([groupId, groupNotifications]) => {
-      if (groupNotifications.length >= 2) {
-        // Create a representative notification for the group
-        const representative = { ...groupNotifications[0] };
-        representative.title = `${groupNotifications.length} ${representative.category} notifications`;
-        representative.description = `Multiple ${representative.category} items: ${groupNotifications.map(n => n.title).slice(0, 2).join(', ')}${groupNotifications.length > 2 ? '...' : ''}`;
-        representative.isGrouped = true;
-        representative.groupCount = groupNotifications.length;
+    if (type === 'medical' || message.includes('patient')) {
+      actions.push({
+        label: 'View Patient',
+        action: 'view-patient',
+        type: 'primary' as const
+      });
+    }
+
+    if (type === 'urgent' || message.includes('emergency')) {
+      actions.push({
+        label: 'Respond Now',
+        action: 'emergency-response',
+        type: 'danger' as const
+      });
+    }
+
+    if (message.includes('completed') || message.includes('report')) {
+      actions.push({
+        label: 'Review',
+        action: 'review-report',
+        type: 'primary' as const
+      });
+    }
+
+    return actions.slice(0, 3); // Limit to 3 actions max
+  }
+
+  /**
+   * Apply intelligent grouping to similar notifications
+   */
+  private intelligentGrouping(
+    notifications: AIEnhancedNotification[]
+  ): AIEnhancedNotification[] {
+    const groups = new Map<string, AIEnhancedNotification[]>();
+    
+    notifications.forEach(notification => {
+      const groupKey = this.generateGroupKey(notification);
+      
+      if (!groups.has(groupKey)) {
+        groups.set(groupKey, []);
+      }
+      
+      groups.get(groupKey)!.push(notification);
+    });
+
+    const result: AIEnhancedNotification[] = [];
+
+    groups.forEach((groupNotifications, groupKey) => {
+      if (groupNotifications.length > 1 && this.shouldGroup(groupNotifications)) {
+        // Create grouped notification
+        const representative = groupNotifications[0];
+        const grouped: AIEnhancedNotification = {
+          ...representative,
+          id: `group-${groupKey}`,
+          title: this.generateGroupTitle(groupNotifications),
+          message: this.generateGroupMessage(groupNotifications),
+          isGrouped: true,
+          groupId: groupKey,
+          groupCount: groupNotifications.length,
+          aiPriority: Math.max(...groupNotifications.map(n => n.aiPriority)),
+          timestamp: new Date(Math.max(...groupNotifications.map(n => n.timestamp.getTime())))
+        };
         
-        result.push(representative);
+        result.push(grouped);
       } else {
+        // Add individual notifications
         result.push(...groupNotifications);
       }
     });
 
-    return result.sort((a, b) => b.aiPriority - a.aiPriority);
+    return result;
   }
 
-  public updateSettings(newSettings: Partial<AISettings>): void {
-    this.settings = { ...this.settings, ...newSettings };
-  }
-
-  public recordUserAction(notificationId: string, action: string, responseTime: number): void {
-    if (this.settings.learningMode.enabled) {
-      // In a real implementation, this would update user behavior analytics
-      console.log(`Recording user action: ${action} on ${notificationId} after ${responseTime}ms`);
+  /**
+   * Generate group key for similar notifications
+   */
+  private generateGroupKey(notification: AIEnhancedNotification): string {
+    // Group by type and similar content
+    const type = notification.type;
+    const sender = notification.sender;
+    
+    // Group appointments from same day
+    if (type === 'appointment') {
+      const date = notification.timestamp.toDateString();
+      return `appointments-${date}`;
     }
+
+    // Group system notifications
+    if (type === 'system') {
+      return 'system-notifications';
+    }
+
+    // Group by sender for reports
+    if (notification.message.includes('completed') || notification.message.includes('report')) {
+      return `reports-${sender}`;
+    }
+
+    return `individual-${notification.id}`;
+  }
+
+  /**
+   * Determine if notifications should be grouped
+   */
+  private shouldGroup(notifications: AIEnhancedNotification[]): boolean {
+    // Don't group critical notifications
+    if (notifications.some(n => n.aiCategory === 'critical')) {
+      return false;
+    }
+
+    // Group if there are 2 or more similar routine notifications
+    return notifications.length >= 2 && 
+           notifications.every(n => n.aiCategory === 'routine' || n.aiCategory === 'informational');
+  }
+
+  /**
+   * Apply smart prioritization considering user behavior
+   */
+  private smartPrioritization(
+    notifications: AIEnhancedNotification[]
+  ): AIEnhancedNotification[] {
+    return notifications.sort((a, b) => {
+      // Primary sort by AI priority
+      if (a.aiPriority !== b.aiPriority) {
+        return b.aiPriority - a.aiPriority;
+      }
+
+      // Secondary sort by user engagement
+      const aEngagement = this.userBehavior.clickThroughRates[a.type] || 0;
+      const bEngagement = this.userBehavior.clickThroughRates[b.type] || 0;
+      
+      if (aEngagement !== bEngagement) {
+        return bEngagement - aEngagement;
+      }
+
+      // Tertiary sort by timestamp
+      return b.timestamp.getTime() - a.timestamp.getTime();
+    });
+  }
+
+  /**
+   * Calculate personalized timing for notifications
+   */
+  private calculatePersonalizedTiming(notification: NotificationData) {
+    const currentHour = new Date().getHours();
+    const isActiveHour = this.userBehavior.activeHours.includes(currentHour);
+    
+    const avgResponseTime = this.userBehavior.averageResponseTime[notification.type] || 60;
+    const userEngagement = this.userBehavior.clickThroughRates[notification.type] || 0.5;
+
+    return {
+      optimalTime: this.calculateOptimalTime(notification),
+      frequencyScore: this.calculateFrequencyScore(notification),
+      userEngagement: userEngagement
+    };
+  }
+
+  /**
+   * Calculate AI confidence score
+   */
+  private calculateConfidence(notification: NotificationData): number {
+    let confidence = 0.8; // Base confidence
+
+    // Increase confidence for well-structured notifications
+    if (notification.metadata?.category) confidence += 0.1;
+    if (notification.type) confidence += 0.05;
+    if (notification.avatar) confidence += 0.05;
+
+    return Math.min(1, confidence);
+  }
+
+  /**
+   * Fallback processing when AI fails
+   */
+  private fallbackProcessing(notifications: NotificationData[]): AIEnhancedNotification[] {
+    return notifications.map(notification => ({
+      ...notification,
+      aiPriority: 3,
+      aiCategory: 'routine' as const,
+      confidence: 0.5,
+      suggestedActions: [{
+        label: 'Mark as Read',
+        action: 'mark-read',
+        type: 'secondary' as const
+      }]
+    }));
+  }
+
+  /**
+   * Load user behavior data (would normally come from API/localStorage)
+   */
+  private loadUserBehaviorData(): UserBehaviorData {
+    // Mock data - in production this would come from analytics service
+    return {
+      averageResponseTime: {
+        'urgent': 120, // 2 minutes
+        'medical': 300, // 5 minutes
+        'appointment': 900, // 15 minutes
+        'system': 1800, // 30 minutes
+        'reminder': 3600 // 1 hour
+      },
+      preferredCategories: ['medical', 'appointment', 'urgent'],
+      activeHours: [8, 9, 10, 11, 14, 15, 16, 17], // 8-11 AM, 2-5 PM
+      clickThroughRates: {
+        'urgent': 0.9,
+        'medical': 0.8,
+        'appointment': 0.7,
+        'system': 0.3,
+        'reminder': 0.5
+      },
+      dismissalPatterns: {
+        'urgent': 0.1,
+        'medical': 0.2,
+        'appointment': 0.3,
+        'system': 0.7,
+        'reminder': 0.5
+      }
+    };
+  }
+
+  /**
+   * Helper methods for grouping
+   */
+  private generateGroupTitle(notifications: AIEnhancedNotification[]): string {
+    const type = notifications[0].type;
+    const count = notifications.length;
+    
+    switch (type) {
+      case 'appointment':
+        return `${count} Appointment Updates`;
+      case 'system':
+        return `${count} System Notifications`;
+      case 'medical':
+        return `${count} Medical Reports`;
+      default:
+        return `${count} Notifications`;
+    }
+  }
+
+  private generateGroupMessage(notifications: AIEnhancedNotification[]): string {
+    const senders = [...new Set(notifications.map(n => n.sender))];
+    const type = notifications[0].type;
+    
+    if (senders.length === 1) {
+      return `${senders[0]} sent ${notifications.length} ${type} notifications`;
+    } else {
+      return `${notifications.length} ${type} notifications from ${senders.length} sources`;
+    }
+  }
+
+  private calculateOptimalTime(notification: NotificationData): Date {
+    // Simple algorithm - optimal time is during user's active hours
+    const now = new Date();
+    const currentHour = now.getHours();
+    
+    if (this.userBehavior.activeHours.includes(currentHour)) {
+      return now;
+    }
+    
+    // Find next active hour
+    const nextActiveHour = this.userBehavior.activeHours.find(hour => hour > currentHour) ||
+                          this.userBehavior.activeHours[0] + 24;
+    
+    const optimalTime = new Date(now);
+    optimalTime.setHours(nextActiveHour % 24, 0, 0, 0);
+    
+    return optimalTime;
+  }
+
+  private calculateFrequencyScore(notification: NotificationData): number {
+    // Calculate how frequently this type of notification should be shown
+    const dismissalRate = this.userBehavior.dismissalPatterns[notification.type] || 0.5;
+    return 1 - dismissalRate; // Higher score means show more frequently
+  }
+
+  /**
+   * Public methods for analytics and user feedback
+   */
+  recordUserAction(notificationId: string, action: string, timestamp: Date = new Date()) {
+    // Record user action for learning
+    console.log(`User action recorded: ${action} on ${notificationId} at ${timestamp}`);
+    
+    // In production, this would update the ML model
+    this.updateUserBehavior(notificationId, action, timestamp);
+  }
+
+  private updateUserBehavior(notificationId: string, action: string, timestamp: Date) {
+    // Update user behavior patterns based on actions
+    // This would normally integrate with an ML service
+  }
+
+  getProcessingStatus(): boolean {
+    return this.isProcessing;
+  }
+
+  clearCache() {
+    this.cache.clear();
   }
 }
 
-export { AINotificationService, type NotificationInput, type ProcessedNotification, type AISettings };
+export const aiNotificationService = new AINotificationService();
