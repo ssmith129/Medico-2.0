@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
 import { Badge, Progress, Card, Statistic, Timeline, Tabs, Alert, Empty, Spin } from 'antd';
 import { aiNotificationService } from '../../../../../../core/services/ai-notification-service';
-import type { AIEnhancedNotification } from '../../../../../../core/services/ai-notification-service';
+import type { ProcessedNotification } from '../../../../../../core/services/ai-notification-service';
 
 const { TabPane } = Tabs;
 
