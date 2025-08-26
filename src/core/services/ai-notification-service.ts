@@ -583,12 +583,64 @@ export class AINotificationService {
   }
 
   /**
+   * Process single notification
+   */
+  processNotification(notification: NotificationInput): ProcessedNotification {
+    const enhanced = this.enhanceNotificationSync(notification);
+    return enhanced;
+  }
+
+  /**
+   * Process multiple notifications synchronously
+   */
+  processMultipleNotifications(notifications: NotificationInput[]): ProcessedNotification[] {
+    return notifications.map(notification => this.processNotification(notification));
+  }
+
+  /**
+   * Update AI settings
+   */
+  updateSettings(newSettings: Partial<AISettings>): void {
+    this.settings = { ...this.settings, ...newSettings };
+  }
+
+  /**
+   * Get current settings
+   */
+  getSettings(): AISettings {
+    return { ...this.settings };
+  }
+
+  /**
+   * Synchronous version of enhance notification for immediate processing
+   */
+  private enhanceNotificationSync(notification: NotificationInput): ProcessedNotification {
+    const aiPriority = this.calculatePriority(notification);
+    const aiCategory = this.categorizeNotification(notification);
+    const aiSummary = this.generateSummary(notification.message);
+    const suggestedActions = this.generateSuggestedActions(notification);
+    const personalizedTiming = this.calculatePersonalizedTiming(notification);
+    const confidence = this.calculateConfidence(notification);
+
+    return {
+      ...notification,
+      aiPriority,
+      aiCategory,
+      category: aiCategory,
+      aiSummary,
+      suggestedActions,
+      personalizedTiming,
+      confidence
+    };
+  }
+
+  /**
    * Public methods for analytics and user feedback
    */
   recordUserAction(notificationId: string, action: string, timestamp: Date = new Date()) {
     // Record user action for learning
     console.log(`User action recorded: ${action} on ${notificationId} at ${timestamp}`);
-    
+
     // In production, this would update the ML model
     this.updateUserBehavior(notificationId, action, timestamp);
   }
