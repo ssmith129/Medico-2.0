@@ -364,7 +364,7 @@ const AIMessageDetailView: React.FC = () => {
             <div className="d-flex gap-2 flex-wrap">
               {message.suggestedActions.map((action, index) => (
                 <button
-                  key={index}
+                  key={`${message.id}-action-${action.action}-${index}`}
                   className={`btn btn-${action.type} btn-sm`}
                   onClick={() => console.log(`Action: ${action.action}`)}
                 >
@@ -502,7 +502,7 @@ const AIMessageDetailView: React.FC = () => {
                     <h6 className="mb-3">Factors Considered:</h6>
                     <ul className="list-unstyled">
                       {aiAnalysis.factorsConsidered.map((factor, index) => (
-                        <li key={index} className="mb-2">
+                        <li key={`factor-${index}-${factor.slice(0, 10)}`} className="mb-2">
                           <i className="ti ti-check-circle text-success me-2"></i>
                           {factor}
                         </li>
@@ -513,7 +513,7 @@ const AIMessageDetailView: React.FC = () => {
                   <Card title="Alternative Classifications" className="mb-4">
                     <div className="alternatives-list">
                       {aiAnalysis.alternativeCategories.map((alt, index) => (
-                        <div key={index} className="alternative-item mb-3 p-3 bg-light rounded-3">
+                        <div key={`alt-${alt.category}-${index}`} className="alternative-item mb-3 p-3 bg-light rounded-3">
                           <div className="d-flex justify-content-between align-items-center mb-2">
                             <span className="fw-medium text-capitalize">{alt.category}</span>
                             <span className="badge bg-secondary">{Math.round(alt.confidence * 100)}%</span>
@@ -529,7 +529,7 @@ const AIMessageDetailView: React.FC = () => {
                   <Card title="Keyword Analysis" className="mb-4">
                     <div className="keywords-list">
                       {aiAnalysis.keywordAnalysis.map((keyword, index) => (
-                        <div key={index} className="keyword-item d-flex justify-content-between align-items-center mb-2">
+                        <div key={`keyword-${keyword.keyword}-${index}`} className="keyword-item d-flex justify-content-between align-items-center mb-2">
                           <span className="fw-medium">{keyword.keyword}</span>
                           <div className="d-flex align-items-center gap-2">
                             <Tooltip title={`Weight: ${keyword.weight}`}>
@@ -567,7 +567,7 @@ const AIMessageDetailView: React.FC = () => {
                         <h6 className="mb-2">Risk Factors:</h6>
                         <ul className="list-unstyled">
                           {aiAnalysis.riskAssessment.factors.map((factor, index) => (
-                            <li key={index} className="mb-1">
+                            <li key={`risk-factor-${index}-${factor.slice(0, 10)}`} className="mb-1">
                               <i className="ti ti-alert-triangle text-warning me-2"></i>
                               {factor}
                             </li>
@@ -579,7 +579,7 @@ const AIMessageDetailView: React.FC = () => {
                         <h6 className="mb-2">Recommendations:</h6>
                         <ul className="list-unstyled">
                           {aiAnalysis.riskAssessment.recommendations.map((rec, index) => (
-                            <li key={index} className="mb-1">
+                            <li key={`recommendation-${index}-${rec.slice(0, 10)}`} className="mb-1">
                               <i className="ti ti-bulb text-primary me-2"></i>
                               {rec}
                             </li>
@@ -599,7 +599,7 @@ const AIMessageDetailView: React.FC = () => {
               <Timeline>
                 {timeline.map((item, index) => (
                   <Timeline.Item
-                    key={index}
+                    key={`timeline-${item.action}-${index}`}
                     color={item.type === 'success' ? 'green' : 
                            item.type === 'warning' ? 'orange' : 
                            item.type === 'error' ? 'red' : 'blue'}
