@@ -379,7 +379,7 @@ const DoctorAIEnhancedMessages = () => {
     }
     
     // Calculate medical insights
-    const totalUnread = mockDoctorConversations.reduce((sum, conv) => sum + conv.totalUnread, 0);
+    // const totalUnread = mockDoctorConversations.reduce((sum, conv) => sum + conv.totalUnread, 0);
     const emergencyCount = mockDoctorConversations.filter(conv => 
       conv.lastMessage.priority === 'life-threatening' || 
       conv.lastMessage.medicalCategory === 'patient-emergency'
