@@ -615,7 +615,7 @@ const AIInboxTriage: React.FC = () => {
                             <div className="d-flex gap-2 flex-wrap">
                               {notification.suggestedActions.map((action, index) => (
                                 <button
-                                  key={index}
+                                  key={`${notification.id}-action-${action.action}-${index}`}
                                   className={`btn btn-${action.type} btn-sm`}
                                   onClick={() => console.log(`Action: ${action.action} for ${notification.id}`)}
                                 >
