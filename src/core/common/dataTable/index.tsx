@@ -26,7 +26,14 @@ const Datatable: React.FC<DatatableProps> = ({
         String(field).toLowerCase().includes(searchText.toLowerCase())
       )
     );
-    setFilteredDataSource(filteredData);
+
+    // Ensure each record has a unique key for React rendering
+    const dataWithKeys = filteredData.map((record, index) => ({
+      ...record,
+      key: record.key || record.id || record.ID || record.InvoiceID || index
+    }));
+
+    setFilteredDataSource(dataWithKeys);
   }, [searchText, dataSource]);
 
   const onSelectChange = (newSelectedRowKeys: any[]) => {
