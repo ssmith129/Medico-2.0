@@ -811,7 +811,7 @@ const AIEnhancedMessages = () => {
                                   <small className="text-muted d-block mb-1">AI Detected Keywords:</small>
                                   <div className="d-flex gap-1 flex-wrap">
                                     {selectedConversation.lastMessage.aiClassification.keywords.slice(0, 4).map((keyword, index) => (
-                                      <span key={index} className="badge bg-primary-transparent text-primary fs-10">
+                                      <span key={`${selectedConversation.id}-keyword-${keyword}-${index}`} className="badge bg-primary-transparent text-primary fs-10">
                                         {keyword}
                                       </span>
                                     ))}

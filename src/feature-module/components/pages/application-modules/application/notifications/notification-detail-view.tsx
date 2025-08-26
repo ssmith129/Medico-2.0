@@ -386,8 +386,8 @@ const NotificationDetailView: React.FC<NotificationDetailProps> = ({
     <div className="action-history">
       <Timeline>
         {notification.actionHistory?.map((action, index) => (
-          <Timeline.Item 
-            key={index}
+          <Timeline.Item
+            key={`${notification.id}-action-${index}-${action.timestamp.getTime()}`}
             color={index === 0 ? 'green' : 'blue'}
             dot={index === 0 ? <i className="ti ti-check-circle text-success"></i> : undefined}
           >
@@ -411,7 +411,7 @@ const NotificationDetailView: React.FC<NotificationDetailProps> = ({
     <div className="related-notifications">
       <div className="list-group">
         {notification.relatedNotifications?.map((related, index) => (
-          <div key={index} className="list-group-item border-0 px-0">
+          <div key={`${notification.id}-related-${related.id}-${index}`} className="list-group-item border-0 px-0">
             <div className="d-flex justify-content-between align-items-center">
               <div>
                 <h6 className="mb-1 fs-14">{related.title}</h6>

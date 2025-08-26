@@ -383,7 +383,7 @@ const AIFilterControls: React.FC<FilterControlsProps> = ({
         <div className="d-flex gap-2 flex-wrap">
           {quickFilters.map((quickFilter, index) => (
             <button
-              key={index}
+              key={`quickfilter-${quickFilter.label.toLowerCase().replace(/\s+/g, '-')}-${index}`}
               className="btn btn-outline-primary btn-sm"
               onClick={quickFilter.action}
             >

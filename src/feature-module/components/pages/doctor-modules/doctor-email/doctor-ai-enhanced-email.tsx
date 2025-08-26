@@ -923,7 +923,7 @@ const DoctorAIEnhancedEmail = () => {
                                   {email.aiClassification.medicalKeywords.length > 0 && (
                                     <div className="d-flex gap-1 mt-1 flex-wrap">
                                       {email.aiClassification.medicalKeywords.slice(0, 4).map((keyword, index) => (
-                                        <span key={index} className="badge bg-light text-dark fs-10">
+                                        <span key={`${email.id}-medical-tag-${index}`} className="badge bg-light text-dark fs-10">
                                           {keyword}
                                         </span>
                                       ))}

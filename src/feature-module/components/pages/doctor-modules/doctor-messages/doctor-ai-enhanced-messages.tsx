@@ -743,7 +743,7 @@ const DoctorAIEnhancedMessages = () => {
                                     {conversation.lastMessage.patientInfo.criticalAlerts && (
                                       <div className="d-flex gap-1 mt-1">
                                         {conversation.lastMessage.patientInfo.criticalAlerts.slice(0, 2).map((alert, index) => (
-                                          <span key={index} className="badge bg-danger-transparent text-danger fs-10">
+                                          <span key={`${selectedConversation.id}-clinical-flag-${index}`} className="badge bg-danger-transparent text-danger fs-10">
                                             {alert}
                                           </span>
                                         ))}
@@ -1032,7 +1032,7 @@ const DoctorAIEnhancedMessages = () => {
                                   <small className="text-muted d-block mb-1">Medical AI Detected:</small>
                                   <div className="d-flex gap-1 flex-wrap">
                                     {selectedConversation.lastMessage.aiClassification.medicalKeywords.slice(0, 5).map((keyword, index) => (
-                                      <span key={index} className="badge bg-primary-transparent text-primary fs-10">
+                                      <span key={`${selectedConversation.id}-medical-keyword-${index}`} className="badge bg-primary-transparent text-primary fs-10">
                                         {keyword}
                                       </span>
                                     ))}
