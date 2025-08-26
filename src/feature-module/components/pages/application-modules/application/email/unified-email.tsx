@@ -897,7 +897,7 @@ const UnifiedEmail = () => {
                                       {email.labels && email.labels.length > 0 && (
                                         <div className="d-flex gap-1">
                                           {email.labels.slice(0, 2).map((label, index) => (
-                                            <span key={index} className="badge badge-soft-info">
+                                            <span key={`${email.id}-label-${label}-${index}`} className="badge badge-soft-info">
                                               <i className="ti ti-square me-1" />
                                               {label}
                                             </span>
@@ -934,7 +934,7 @@ const UnifiedEmail = () => {
                                   {isAIMode && email.aiClassification.tags.length > 0 && (
                                     <div className="d-flex gap-1 mt-1 flex-wrap">
                                       {email.aiClassification.tags.slice(0, 3).map((tag, index) => (
-                                        <span key={index} className="badge bg-light text-dark fs-10">
+                                        <span key={`${email.id}-ai-tag-${tag}-${index}`} className="badge bg-light text-dark fs-10">
                                           {tag}
                                         </span>
                                       ))}
