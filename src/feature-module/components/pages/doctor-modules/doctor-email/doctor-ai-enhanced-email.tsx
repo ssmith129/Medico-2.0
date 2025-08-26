@@ -326,8 +326,8 @@ const DoctorAIEnhancedEmail = () => {
   }, [emails, filters]);
 
   const handleToggle = () => setShowMore(prev => !prev);
-  const handleToggle2 = () => setShowMore2(prev => !prev);
-  const handleToggle3 = () => setShowMore3(prev => !prev);
+  // const handleToggle2 = () => setShowMore2(prev => !prev);
+  // const handleToggle3 = () => setShowMore3(prev => !prev);
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
