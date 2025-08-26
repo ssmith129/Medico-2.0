@@ -1,796 +1,768 @@
-# Smart Scheduling Feature Design System
+# Smart Scheduling Design System
 
 ## Overview
-This document outlines the comprehensive design specifications for the Smart Scheduling feature integration into the healthcare platform, maintaining strict adherence to the existing UI design system.
 
-## Design System Analysis
+This document outlines the design system components, patterns, and specifications for the Smart Scheduling feature. All components maintain 100% visual consistency with the existing healthcare platform design system while introducing AI-enhanced functionality.
 
-### Current Design Patterns Identified
-- **Color Palette**: Primary blue, success green (#198754), warning orange (#ffc107), danger red (#dc3545), info light blue (#0dcaf0)
-- **Typography**: System font stack with fw-bold, fw-semibold, fw-medium weight classes
-- **Components**: Cards with shadow-sm, rounded corners, consistent spacing
-- **Icons**: Tabler Icons (ti ti-*) throughout
-- **Layout**: Flexbox-based responsive grid system
+---
 
-## Screen Design Specifications
+## 🎨 Design Tokens
 
-### 1. Enhanced Doctor Appointments Calendar View
+### Color Palette
 
-#### Base Layout (Existing + Enhancements)
-```html
-<!-- Enhanced Calendar Header with Smart Toggle -->
-<div className="d-flex align-items-sm-center flex-sm-row flex-column gap-2 pb-3 mb-3 border-1 border-bottom">
-  <div className="flex-grow-1">
-    <div className="d-flex align-items-center gap-3">
-      <h4 className="fw-semibold mb-0">Appointments</h4>
-      <!-- NEW: Smart Scheduling Toggle -->
-      <div className="form-check form-switch">
-        <input className="form-check-input" type="checkbox" id="smartSchedulingToggle" checked>
-        <label className="form-check-label text-primary fw-medium" for="smartSchedulingToggle">
-          <i className="ti ti-brain me-1"></i>Smart Scheduling
-        </label>
-      </div>
-      <!-- NEW: AI Status Indicator -->
-      <span className="badge bg-success-transparent text-success fs-12">
-        <i className="ti ti-circle-filled fs-8 me-1"></i>AI Active
-      </span>
-    </div>
-    <p className="mb-0 text-muted fs-13">AI-powered optimal slot recommendations</p>
-  </div>
-  
-  <!-- Enhanced Action Buttons -->
-  <div className="text-end d-flex">
-    <!-- NEW: Smart Insights Button -->
-    <button className="btn btn-outline-primary me-2 fs-13 btn-md">
-      <i className="ti ti-chart-line me-1"></i>Smart Insights
-    </button>
-    
-    <button className="btn btn-primary ms-2 fs-13 btn-md" data-bs-toggle="offcanvas" data-bs-target="#smart_appointment">
-      <i className="ti ti-brain me-1"></i>Smart Book
-    </button>
-  </div>
-</div>
-```
+The Smart Scheduling feature uses the existing platform color system with specific AI-related extensions:
 
-#### Calendar Slot Enhancement Overlay
-```html
-<!-- Smart Scheduling Overlay for Calendar Slots -->
-<div className="calendar-slot-container position-relative">
-  <!-- Base Calendar Slot -->
-  <div className="calendar-slot p-2 border rounded position-relative" 
-       data-slot-score="85" 
-       data-load-percentage="60"
-       data-no-show-risk="12">
-    
-    <!-- NEW: Slot Intelligence Overlay (appears on hover) -->
-    <div className="slot-intelligence-overlay position-absolute top-0 start-0 w-100 h-100 d-none">
-      <!-- Intelligence Indicators -->
-      <div className="slot-score-indicator position-absolute top-1 end-1">
-        <span className="badge bg-success rounded-pill fs-10">85%</span>
-      </div>
-      
-      <!-- Load Intensity Gradient (subtle background) -->
-      <div className="load-intensity-bg position-absolute top-0 start-0 w-100 h-100 rounded" 
-           style="background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);">
-      </div>
-    </div>
-    
-    <!-- Enhanced Hover Tooltip -->
-    <div className="slot-tooltip position-absolute d-none" data-bs-toggle="tooltip" data-bs-placement="top">
-      <div className="card shadow-lg border-0 p-3" style="min-width: 280px;">
-        <div className="d-flex align-items-center justify-content-between mb-2">
-          <span className="fw-semibold">Slot Intelligence</span>
-          <span className="badge bg-primary fs-10">AI Powered</span>
-        </div>
-        
-        <!-- Metrics Row -->
-        <div className="row g-2 mb-2">
-          <div className="col-4 text-center">
-            <div className="metric-item">
-              <div className="text-success fw-bold">85%</div>
-              <small className="text-muted">Optimal Score</small>
-            </div>
-          </div>
-          <div className="col-4 text-center">
-            <div className="metric-item">
-              <div className="text-warning fw-bold">60%</div>
-              <small className="text-muted">Current Load</small>
-            </div>
-          </div>
-          <div className="col-4 text-center">
-            <div className="metric-item">
-              <div className="text-info fw-bold">12%</div>
-              <small className="text-muted">No-show Risk</small>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Availability Status -->
-        <div className="availability-status mb-2">
-          <div className="d-flex align-items-center gap-2">
-            <i className="ti ti-door text-success"></i>
-            <span className="fs-13">Room 203 Available</span>
-          </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div className="d-flex gap-2 mt-2">
-          <button className="btn btn-primary btn-sm flex-fill">
-            <i className="ti ti-plus me-1"></i>Book Slot
-          </button>
-          <button className="btn btn-outline-primary btn-sm">
-            <i className="ti ti-brain"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-```
-
-#### Smart Suggestions Popover (Empty Slot Click)
-```html
-<!-- Smart Suggestions Popover -->
-<div className="offcanvas offcanvas-end" tabindex="-1" id="smart_suggestions">
-  <div className="offcanvas-header border-bottom">
-    <div className="d-flex align-items-center">
-      <i className="ti ti-brain text-primary fs-20 me-2"></i>
-      <div>
-        <h5 className="mb-0 fw-bold">Smart Suggestions</h5>
-        <small className="text-muted">AI-powered optimal time slots</small>
-      </div>
-    </div>
-    <button type="button" className="btn-close" data-bs-dismiss="offcanvas"></button>
-  </div>
-  
-  <div className="offcanvas-body p-0">
-    <!-- Suggestion Context -->
-    <div className="suggestion-context bg-light p-3 border-bottom">
-      <div className="d-flex align-items-center gap-2 mb-2">
-        <i className="ti ti-calendar-time text-primary"></i>
-        <span className="fw-medium">Selected: Monday, Jan 15, 2025</span>
-      </div>
-      <div className="constraint-badges">
-        <span className="badge bg-info-transparent text-info me-1">
-          <i className="ti ti-users me-1"></i>General Visit
-        </span>
-        <span className="badge bg-warning-transparent text-warning">
-          <i className="ti ti-clock me-1"></i>30 min duration
-        </span>
-      </div>
-    </div>
-    
-    <!-- Top 3 Recommendations -->
-    <div className="recommendations-list p-3">
-      <h6 className="fw-semibold mb-3 d-flex align-items-center">
-        <i className="ti ti-star text-warning me-2"></i>
-        Top Recommendations
-      </h6>
-      
-      <!-- Recommendation Card 1 (Optimal) -->
-      <div className="recommendation-card card border-success mb-3">
-        <div className="card-body p-3">
-          <div className="d-flex align-items-center justify-content-between mb-2">
-            <div className="d-flex align-items-center gap-2">
-              <span className="badge bg-success rounded-pill">1</span>
-              <span className="fw-semibold">10:30 AM - 11:00 AM</span>
-            </div>
-            <div className="confidence-score">
-              <span className="badge bg-success-transparent text-success fs-10">
-                95% Match
-              </span>
-            </div>
-          </div>
-          
-          <div className="recommendation-reasons mb-2">
-            <div className="reason-tag d-inline-flex align-items-center me-2 mb-1">
-              <i className="ti ti-check-circle text-success fs-12 me-1"></i>
-              <span className="fs-12">Optimal load (45%)</span>
-            </div>
-            <div className="reason-tag d-inline-flex align-items-center me-2 mb-1">
-              <i className="ti ti-check-circle text-success fs-12 me-1"></i>
-              <span className="fs-12">Low no-show risk</span>
-            </div>
-            <div className="reason-tag d-inline-flex align-items-center mb-1">
-              <i className="ti ti-check-circle text-success fs-12 me-1"></i>
-              <span className="fs-12">Room available</span>
-            </div>
-          </div>
-          
-          <button className="btn btn-success btn-sm w-100">
-            <i className="ti ti-calendar-plus me-1"></i>
-            Book This Slot
-          </button>
-        </div>
-      </div>
-      
-      <!-- Recommendation Card 2 (Good) -->
-      <div className="recommendation-card card border-warning mb-3">
-        <div className="card-body p-3">
-          <div className="d-flex align-items-center justify-content-between mb-2">
-            <div className="d-flex align-items-center gap-2">
-              <span className="badge bg-warning rounded-pill">2</span>
-              <span className="fw-semibold">2:15 PM - 2:45 PM</span>
-            </div>
-            <div className="confidence-score">
-              <span className="badge bg-warning-transparent text-warning fs-10">
-                82% Match
-              </span>
-            </div>
-          </div>
-          
-          <div className="recommendation-reasons mb-2">
-            <div className="reason-tag d-inline-flex align-items-center me-2 mb-1">
-              <i className="ti ti-alert-circle text-warning fs-12 me-1"></i>
-              <span className="fs-12">Moderate load (70%)</span>
-            </div>
-            <div className="reason-tag d-inline-flex align-items-center me-2 mb-1">
-              <i className="ti ti-check-circle text-success fs-12 me-1"></i>
-              <span className="fs-12">Room available</span>
-            </div>
-          </div>
-          
-          <button className="btn btn-warning btn-sm w-100">
-            <i className="ti ti-calendar-plus me-1"></i>
-            Book This Slot
-          </button>
-        </div>
-      </div>
-      
-      <!-- Recommendation Card 3 (Alternative) -->
-      <div className="recommendation-card card border-info mb-3">
-        <div className="card-body p-3">
-          <div className="d-flex align-items-center justify-content-between mb-2">
-            <div className="d-flex align-items-center gap-2">
-              <span className="badge bg-info rounded-pill">3</span>
-              <span className="fw-semibold">4:00 PM - 4:30 PM</span>
-            </div>
-            <div className="confidence-score">
-              <span className="badge bg-info-transparent text-info fs-10">
-                78% Match
-              </span>
-            </div>
-          </div>
-          
-          <div className="recommendation-reasons mb-2">
-            <div className="reason-tag d-inline-flex align-items-center me-2 mb-1">
-              <i className="ti ti-check-circle text-success fs-12 me-1"></i>
-              <span className="fs-12">Low load (35%)</span>
-            </div>
-            <div className="reason-tag d-inline-flex align-items-center me-2 mb-1">
-              <i className="ti ti-alert-circle text-warning fs-12 me-1"></i>
-              <span className="fs-12">Alternative room</span>
-            </div>
-          </div>
-          
-          <button className="btn btn-info btn-sm w-100">
-            <i className="ti ti-calendar-plus me-1"></i>
-            Book This Slot
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Alternative Options -->
-    <div className="alternative-options border-top p-3">
-      <h6 className="fw-semibold mb-3">Alternative Suggestions</h6>
-      <button className="btn btn-outline-primary btn-sm w-100 mb-2">
-        <i className="ti ti-calendar-search me-1"></i>
-        Show Next Day Options
-      </button>
-      <button className="btn btn-outline-secondary btn-sm w-100">
-        <i className="ti ti-settings me-1"></i>
-        Adjust Parameters
-      </button>
-    </div>
-  </div>
-</div>
-```
-
-### 2. Enhanced New Appointment Form with Smart Suggestions
-
-#### Smart Suggestions Side Panel Integration
-```html
-<div className="row justify-content-center">
-  <div className="col-lg-12">
-    <div className="row">
-      <!-- Enhanced Appointment Form (Left) -->
-      <div className="col-lg-7">
-        <div className="card">
-          <div className="card-header d-flex align-items-center justify-content-between">
-            <h5 className="fw-bold mb-0">New Appointment</h5>
-            <div className="smart-mode-toggle">
-              <div className="form-check form-switch">
-                <input className="form-check-input" type="checkbox" id="smartMode" checked>
-                <label className="form-check-label text-primary fw-medium" for="smartMode">
-                  <i className="ti ti-brain me-1"></i>Smart Mode
-                </label>
-              </div>
-            </div>
-          </div>
-          
-          <div className="card-body">
-            <!-- Enhanced Form Fields with Real-time Updates -->
-            <div className="form">
-              <!-- Patient Selection with Smart Context -->
-              <div className="mb-3">
-                <div className="d-flex align-items-center justify-content-between mb-1">
-                  <label className="form-label mb-0 fw-medium">
-                    Patient<span className="text-danger ms-1">*</span>
-                  </label>
-                  <!-- NEW: Patient History Indicator -->
-                  <span className="badge bg-info-transparent text-info fs-12">
-                    <i className="ti ti-history me-1"></i>Last visit: 2 weeks ago
-                  </span>
-                </div>
-                <select className="form-select" id="patientSelect">
-                  <option selected>Alberto Ripley</option>
-                  <option>Susan Babin</option>
-                </select>
-              </div>
-              
-              <!-- Department with Smart Suggestions -->
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label mb-1 fw-medium">
-                      Department<span className="text-danger ms-1">*</span>
-                    </label>
-                    <select className="form-select" id="departmentSelect">
-                      <option selected>Cardiology</option>
-                      <option>Neurology</option>
-                    </select>
-                    <!-- NEW: Smart Suggestion -->
-                    <small className="text-primary d-flex align-items-center mt-1">
-                      <i className="ti ti-brain fs-12 me-1"></i>
-                      AI suggests Cardiology based on history
-                    </small>
-                  </div>
-                </div>
-                
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label mb-1 fw-medium">
-                      Doctor<span className="text-danger ms-1">*</span>
-                    </label>
-                    <select className="form-select" id="doctorSelect">
-                      <option selected>Dr. Johnson</option>
-                      <option>Dr. Smith</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Smart Date/Time Selection -->
-              <div className="row">
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label mb-1 fw-medium">
-                      Date of Appointment<span className="text-danger ms-1">*</span>
-                    </label>
-                    <div className="input-icon-end position-relative">
-                      <input type="date" className="form-control" id="appointmentDate">
-                      <span className="input-icon-addon">
-                        <i className="ti ti-calendar"></i>
-                      </span>
-                    </div>
-                    <!-- NEW: Smart Date Suggestions -->
-                    <div className="smart-date-suggestions mt-2">
-                      <small className="text-muted d-block mb-1">Quick suggestions:</small>
-                      <div className="d-flex gap-1 flex-wrap">
-                        <button type="button" className="btn btn-outline-primary btn-sm">
-                          Today
-                        </button>
-                        <button type="button" className="btn btn-outline-primary btn-sm">
-                          Tomorrow
-                        </button>
-                        <button type="button" className="btn btn-outline-primary btn-sm">
-                          Next Mon
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="col-md-6">
-                  <div className="mb-3">
-                    <label className="form-label mb-1 fw-medium">
-                      Time<span className="text-danger ms-1">*</span>
-                    </label>
-                    <input type="time" className="form-control" id="appointmentTime">
-                    <!-- NEW: Smart Time Suggestion -->
-                    <div className="smart-time-alert mt-2">
-                      <div className="alert alert-info d-flex align-items-center py-2 px-3">
-                        <i className="ti ti-info-circle me-2"></i>
-                        <small>AI suggests 10:30 AM for optimal scheduling</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Conflict Detection -->
-              <div className="conflict-detection mb-3">
-                <div className="alert alert-warning d-flex align-items-start py-3">
-                  <i className="ti ti-alert-triangle text-warning me-2 mt-1"></i>
-                  <div>
-                    <strong>Scheduling Conflict Detected</strong>
-                    <p className="mb-2 mt-1">Dr. Johnson has another appointment at 10:00 AM</p>
-                    <button type="button" className="btn btn-warning btn-sm me-2">
-                      <i className="ti ti-wand me-1"></i>Auto-resolve
-                    </button>
-                    <button type="button" className="btn btn-outline-warning btn-sm">
-                      Show alternatives
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Appointment Reason -->
-              <div className="mb-3">
-                <label className="form-label mb-1 fw-medium">
-                  Appointment Reason<span className="text-danger ms-1">*</span>
-                </label>
-                <textarea className="form-control" rows="3" placeholder="Describe the reason for this appointment..."></textarea>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Smart Suggestions Panel (Right) -->
-      <div className="col-lg-5">
-        <div className="card border-primary">
-          <div className="card-header bg-primary-transparent">
-            <div className="d-flex align-items-center">
-              <i className="ti ti-brain text-primary fs-20 me-2"></i>
-              <div>
-                <h6 className="mb-0 fw-bold text-primary">Smart Suggestions</h6>
-                <small className="text-muted">Live AI recommendations</small>
-              </div>
-            </div>
-          </div>
-          
-          <div className="card-body p-0">
-            <!-- Live Update Status -->
-            <div className="suggestion-status bg-light p-3 border-bottom">
-              <div className="d-flex align-items-center gap-2">
-                <div className="spinner-border spinner-border-sm text-primary" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-                <span className="fs-13">Analyzing optimal time slots...</span>
-              </div>
-            </div>
-            
-            <!-- Ranked Suggestions List -->
-            <div className="suggestions-list">
-              <!-- Suggestion 1 - Optimal -->
-              <div className="suggestion-item border-bottom p-3">
-                <div className="d-flex align-items-center justify-content-between mb-2">
-                  <div className="d-flex align-items-center gap-2">
-                    <span className="badge bg-success rounded-circle">1</span>
-                    <div>
-                      <div className="fw-semibold">Today, 10:30 AM</div>
-                      <small className="text-muted">30 min duration</small>
-                    </div>
-                  </div>
-                  <div className="confidence-badge">
-                    <span className="badge bg-success-transparent text-success fs-10">
-                      96% optimal
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="suggestion-rationale mb-3">
-                  <div className="rationale-reasons">
-                    <div className="reason-item d-flex align-items-center mb-1">
-                      <i className="ti ti-check-circle text-success fs-12 me-2"></i>
-                      <span className="fs-12">Perfect patient preference match</span>
-                    </div>
-                    <div className="reason-item d-flex align-items-center mb-1">
-                      <i className="ti ti-check-circle text-success fs-12 me-2"></i>
-                      <span className="fs-12">Low clinic load (42%)</span>
-                    </div>
-                    <div className="reason-item d-flex align-items-center">
-                      <i className="ti ti-check-circle text-success fs-12 me-2"></i>
-                      <span className="fs-12">Room 203 available</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <button type="button" className="btn btn-success btn-sm w-100">
-                  <i className="ti ti-mouse me-1"></i>
-                  One-tap Fill
-                </button>
-              </div>
-              
-              <!-- Suggestion 2 - Good -->
-              <div className="suggestion-item border-bottom p-3">
-                <div className="d-flex align-items-center justify-content-between mb-2">
-                  <div className="d-flex align-items-center gap-2">
-                    <span className="badge bg-warning rounded-circle">2</span>
-                    <div>
-                      <div className="fw-semibold">Tomorrow, 9:15 AM</div>
-                      <small className="text-muted">30 min duration</small>
-                    </div>
-                  </div>
-                  <div className="confidence-badge">
-                    <span className="badge bg-warning-transparent text-warning fs-10">
-                      89% optimal
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="suggestion-rationale mb-3">
-                  <div className="rationale-reasons">
-                    <div className="reason-item d-flex align-items-center mb-1">
-                      <i className="ti ti-check-circle text-success fs-12 me-2"></i>
-                      <span className="fs-12">Good timing for patient</span>
-                    </div>
-                    <div className="reason-item d-flex align-items-center mb-1">
-                      <i className="ti ti-alert-circle text-warning fs-12 me-2"></i>
-                      <span className="fs-12">Moderate load (65%)</span>
-                    </div>
-                    <div className="reason-item d-flex align-items-center">
-                      <i className="ti ti-check-circle text-success fs-12 me-2"></i>
-                      <span className="fs-12">Preferred room available</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <button type="button" className="btn btn-warning btn-sm w-100">
-                  <i className="ti ti-mouse me-1"></i>
-                  One-tap Fill
-                </button>
-              </div>
-              
-              <!-- Show More Suggestions -->
-              <div className="show-more-suggestions p-3">
-                <button type="button" className="btn btn-outline-primary btn-sm w-100">
-                  <i className="ti ti-chevron-down me-1"></i>
-                  Show 3 more suggestions
-                </button>
-              </div>
-            </div>
-            
-            <!-- Smart Actions -->
-            <div className="smart-actions border-top p-3">
-              <div className="row g-2">
-                <div className="col-6">
-                  <button type="button" className="btn btn-outline-info btn-sm w-100">
-                    <i className="ti ti-refresh me-1"></i>
-                    Refresh
-                  </button>
-                </div>
-                <div className="col-6">
-                  <button type="button" className="btn btn-outline-secondary btn-sm w-100">
-                    <i className="ti ti-adjustments me-1"></i>
-                    Adjust
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Smart Insights Card -->
-        <div className="card mt-3 border-info">
-          <div className="card-header bg-info-transparent">
-            <h6 className="mb-0 fw-bold text-info">
-              <i className="ti ti-chart-line me-2"></i>
-              Smart Insights
-            </h6>
-          </div>
-          <div className="card-body">
-            <div className="insight-metrics">
-              <div className="metric-row d-flex justify-content-between mb-2">
-                <span className="fs-13">Current week load:</span>
-                <span className="fw-semibold text-warning">72%</span>
-              </div>
-              <div className="metric-row d-flex justify-content-between mb-2">
-                <span className="fs-13">Patient no-show risk:</span>
-                <span className="fw-semibold text-success">Low (8%)</span>
-              </div>
-              <div className="metric-row d-flex justify-content-between">
-                <span className="fs-13">Optimal booking window:</span>
-                <span className="fw-semibold text-info">3-5 days ahead</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-```
-
-## Component Specifications
-
-### 1. Smart Slot Score Indicator
 ```scss
-.slot-score-indicator {
-  .badge {
-    font-size: 0.625rem;
-    padding: 0.25rem 0.5rem;
-    
-    &.score-excellent { background-color: #198754; }
-    &.score-good { background-color: #ffc107; }
-    &.score-fair { background-color: #fd7e14; }
-    &.score-poor { background-color: #dc3545; }
+// Primary Colors (From existing system)
+--primary: #2E37A4;           // Main primary blue
+--secondary: #00D3C7;         // Teal accent
+--success: #27AE60;           // Green for positive states
+--info: #2F80ED;              // Blue for informational
+--warning: #E2B93B;           // Yellow for warnings
+--danger: #EF1E1E;            // Red for errors
+
+// AI-Specific Colors
+--ai-primary: var(--primary);          // AI elements use primary
+--ai-confidence-high: var(--success);  // 90%+ confidence
+--ai-confidence-medium: var(--info);   // 75-89% confidence  
+--ai-confidence-low: var(--warning);   // Below 75% confidence
+--ai-accent: var(--secondary);         // AI accent elements
+
+// Transparent Backgrounds
+--primary-transparent: #ECEDF7;
+--success-transparent: #F4FBF7;
+--info-transparent: #F4F9FE;
+--warning-transparent: #FEFBF5;
+--danger-transparent: #FEF4F4;
+```
+
+### Typography Scale
+
+Following the existing Inter font family system:
+
+```scss
+// Font Family
+font-family: 'Inter', sans-serif;
+
+// Font Weights
+--font-weight-normal: 400;
+--font-weight-medium: 500;
+--font-weight-semibold: 600;
+--font-weight-bold: 700;
+
+// Font Sizes (following existing system)
+--fs-10: 0.625rem;    // 10px - small badges
+--fs-12: 0.75rem;     // 12px - detail text
+--fs-13: 0.8125rem;   // 13px - body text
+--fs-14: 0.875rem;    // 14px - default body
+--fs-18: 1.125rem;    // 18px - section headers
+--fs-24: 1.5rem;      // 24px - page headers
+```
+
+### Spacing System
+
+Consistent with Bootstrap 5 spacing scale:
+
+```scss
+// Spacing Scale (rem units)
+0.25rem  // 1 (4px)
+0.5rem   // 2 (8px) 
+0.75rem  // 3 (12px)
+1rem     // 4 (16px)
+1.25rem  // 5 (20px)
+1.5rem   // 6 (24px)
+2rem     // 7 (32px)
+2.5rem   // 8 (40px)
+3rem     // 9 (48px)
+```
+
+---
+
+## 🧩 Component Library
+
+### 1. AI Mode Toggle
+
+**Purpose**: Switch between standard and AI-enhanced views
+
+**Specifications**:
+- Switch input with primary color when active
+- Robot icon indicator
+- Clear "On/Off" state labeling
+- Accessibility: proper ARIA labels
+
+```tsx
+interface AIModeToggleProps {
+  isActive: boolean;
+  onToggle: (active: boolean) => void;
+  label?: string;
+}
+```
+
+**Visual States**:
+- Inactive: Gray switch, "AI Insights Off"
+- Active: Primary blue switch, "AI Insights On"
+- Focus: 2px primary outline
+- Disabled: Reduced opacity (0.6)
+
+**Usage Example**:
+```html
+<div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" id="aiMode" checked>
+  <label class="form-check-label fw-medium text-primary" for="aiMode">
+    <i class="ti ti-robot me-1"></i>
+    AI Insights On
+  </label>
+</div>
+```
+
+### 2. Smart Suggestion Card
+
+**Purpose**: Display individual time slot recommendations with AI analysis
+
+**Specifications**:
+- Fixed height: auto (responsive content)
+- Border radius: 0.375rem (6px)
+- Padding: 1rem (16px)
+- Hover effect: translateY(-1px) + shadow
+- Selection state: primary background + left border
+
+```tsx
+interface SmartSuggestionProps {
+  slot: {
+    id: string;
+    time: string;
+    date: string;
+    score: number;
+    confidence: number;
+    reasons: string[];
+    conflicts: string[];
+    metrics: {
+      doctorMatch: number;
+      patientPreference: number;
+      departmentLoad: number;
+    };
+  };
+  isSelected: boolean;
+  onSelect: (slotId: string) => void;
+}
+```
+
+**Layout Structure**:
+```
+┌─────────────────────────────────────────┐
+│ Time Info    │         │ Score Badge    │
+│ 10:30 AM     │         │ Score: 95      │
+│ Today        │         │ Conf: 92%      │
+├─────────────────────────────────────────┤
+│ Doctor │ Patient │ Dept   ← Metrics     │
+│  98%   │   87%   │  65%                 │  
+├─────────────────────────────────────────┤
+│ ✓ Doctor's peak performance time        │
+│ ✓ Low patient traffic period            │
+├──────��──────────────────────────────────┤
+│ ⚠ Minor overlap with lunch break        │
+├─────────────────────────────────────────┤
+│        [Select This Time]               │
+└─────────────────────────────────────────┘
+```
+
+### 3. AI Dashboard Cards
+
+**Purpose**: Display real-time scheduling metrics and insights
+
+**Specifications**:
+- Card elevation: box-shadow-lg on hover
+- Icon size: 32px
+- Metric display: Large number + descriptive label
+- Color coding by metric type
+
+```tsx
+interface AIDashboardProps {
+  metrics: {
+    optimalSlots: number;
+    noShowRisk: number;
+    avgWaitTime: string;
+    scheduleEfficiency: number;
+  };
+  isLoading?: boolean;
+}
+```
+
+**Visual Pattern**:
+```
+┌─────────────────────────┐
+│ [Icon] │ 92%            │
+│        │ Optimal Slots  │
+│        │ Available      │
+└─────────────────────────┘
+```
+
+### 4. Conflict Warning Component
+
+**Purpose**: Alert users to scheduling conflicts with actionable suggestions
+
+**Specifications**:
+- Left border: 4px solid (color-coded by severity)
+- Alert icon: 20px, positioned top-left
+- Suggestion list: Bullet points with arrow icons
+- Severity levels: low (info), medium (warning), high (danger)
+
+```tsx
+interface ConflictWarningProps {
+  conflicts: Array<{
+    type: 'scheduling' | 'doctor' | 'room' | 'patient';
+    severity: 'low' | 'medium' | 'high';
+    message: string;
+    suggestions: string[];
+  }>;
+  onSuggestionClick?: (suggestion: string) => void;
+}
+```
+
+**Visual Structure**:
+```
+┌─│ ⚠ Doctor Conflict Detected
+│ │ Dr. Thompson typically takes lunch break during this time
+│ │ 
+│ │ Suggestions:
+│ │ → Book at 10:30 AM instead (95% optimal)
+│ │ → Schedule for 2:00 PM or later
+└─┘
+```
+
+### 5. Slot Score Overlay
+
+**Purpose**: Show AI-generated slot scores on calendar hover
+
+**Specifications**:
+- Tooltip positioning: Bottom-up, centered
+- Max width: 200px
+- Z-index: 1050 (above calendar)
+- Animation: Fade in/out (0.3s ease)
+
+```tsx
+interface SlotScoreOverlayProps {
+  slot: {
+    slotId: string;
+    score: number;
+    loadPercentage: number;
+    noShowRisk: number;
+    recommendation: string;
+    optimalFor: string[];
+  };
+  isVisible: boolean;
+  position: { top: number; left: number };
+}
+```
+
+**Tooltip Content**:
+```
+┌─────────────────────────┐
+│ Slot Analysis   Score: 88│
+├─────────────────────────┤
+│ Load Percentage:    75% │
+│ No-Show Risk:       12% │
+│ Recommendation: Optimal │
+├─────────────────────────┤
+│ Best for:               │
+│ [Follow-up] [Consult]   │
+└─────────────────────────┘
+```
+
+### 6. Confidence Meter
+
+**Purpose**: Visualize AI confidence levels with progress bars
+
+**Specifications**:
+- Height: 4px
+- Border radius: 2px
+- Background: #e9ecef
+- Fill colors: Based on confidence percentage
+- Animation: width transition (0.3s ease)
+
+```tsx
+interface ConfidenceMeterProps {
+  confidence: number; // 0-100
+  showPercentage?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+}
+```
+
+**Color Mapping**:
+- 90-100%: Success green (#27AE60)
+- 75-89%: Info blue (#2F80ED)  
+- 60-74%: Warning yellow (#E2B93B)
+- Below 60%: Danger red (#EF1E1E)
+
+---
+
+## 🎯 Interaction Patterns
+
+### 1. Smart Suggestion Selection
+
+**Flow**:
+1. User clicks suggestion card
+2. Visual feedback: Card becomes selected state
+3. Form auto-fills with selected time/date
+4. Conflict detection runs automatically
+5. Button text changes to "Selected"
+
+**States**:
+- Default: Outline button "Select This Time"
+- Hover: Background color change
+- Selected: Primary button "Selected" with checkmark
+- Loading: Spinner in button
+
+### 2. AI Mode Activation
+
+**Flow**:
+1. User toggles AI mode switch
+2. Loading state shows on relevant components
+3. AI components fade in/slide in
+4. Dashboard metrics update
+5. Calendar overlays become visible
+
+### 3. Conflict Detection
+
+**Flow**:
+1. User changes date/time input
+2. 300ms debounce for API call
+3. Loading indicator on form
+4. Conflict warnings appear/update
+5. Suggestions populate if conflicts found
+
+### 4. Calendar Slot Interaction
+
+**Flow**:
+1. User hovers over calendar slot
+2. Score overlay fades in
+3. Detailed tooltip shows metrics
+4. User clicks empty slot
+5. Smart suggestions modal opens
+6. Top 3 recommendations display
+
+---
+
+## 📱 Responsive Behavior
+
+### Desktop (1200px+)
+- Side-by-side layout (8/4 column split)
+- Full suggestions panel visible
+- Hover interactions enabled
+- Complete tooltips display
+
+### Tablet (768px - 1199px)
+- Stacked layout (suggestions below form)
+- Condensed dashboard cards (2x2 grid)
+- Touch-optimized button sizes (44px min)
+- Simplified tooltips
+
+### Mobile (< 768px)
+- Single column layout
+- Collapsible suggestions panel
+- Swipe gestures for navigation
+- Bottom sheet modal for suggestions
+- Touch-friendly spacing (8px minimum)
+
+### Responsive Breakpoints
+
+```scss
+// Desktop
+@media (min-width: 1200px) {
+  .smart-suggestions-panel {
+    position: sticky;
+    top: 20px;
+  }
+}
+
+// Tablet
+@media (max-width: 1199px) and (min-width: 768px) {
+  .smart-suggestions-panel {
+    margin-top: 2rem;
+    position: static;
+  }
+  
+  .ai-dashboard-cards .row {
+    --bs-gutter-x: 0.75rem;
+  }
+}
+
+// Mobile
+@media (max-width: 767px) {
+  .suggestion-card .row {
+    --bs-gutter-x: 0.5rem;
+  }
+  
+  .metric-card {
+    padding: 0.375rem;
+  }
+  
+  .btn {
+    min-height: 44px;
   }
 }
 ```
 
-### 2. Load Intensity Visualization
+---
+
+## ♿ Accessibility Guidelines
+
+### WCAG AA+ Compliance
+
+#### Color Contrast Requirements
+- Text on backgrounds: 4.5:1 minimum ratio
+- Interactive elements: 3:1 minimum ratio
+- Color-blind testing: All information accessible without color
+
+#### Keyboard Navigation
+```
+Tab Order:
+1. AI Mode Toggle
+2. Form fields (sequential)
+3. Smart suggestions (↑↓ arrows)
+4. Action buttons
+5. Modal elements (if open)
+
+Keyboard Shortcuts:
+- Enter: Select focused suggestion
+- Escape: Close modals/tooltips
+- Space: Toggle AI mode switch
+```
+
+#### Screen Reader Support
+
+**Semantic HTML Structure**:
+```html
+<section aria-label="Smart Time Suggestions" role="region">
+  <h2 id="suggestions-heading">AI-Powered Recommendations</h2>
+  <ul role="list" aria-labelledby="suggestions-heading">
+    <li role="listitem">
+      <button aria-describedby="suggestion-1-details">
+        10:30 AM Today - Score 95
+      </button>
+      <div id="suggestion-1-details" aria-live="polite">
+        High confidence recommendation based on doctor availability
+      </div>
+    </li>
+  </ul>
+</section>
+```
+
+**ARIA Live Regions**:
+```html
+<!-- Status announcements -->
+<div aria-live="assertive" aria-atomic="true" class="sr-only">
+  Conflict detected: Doctor lunch break
+</div>
+
+<div aria-live="polite" aria-atomic="false">
+  Smart suggestions updated: 3 new recommendations available
+</div>
+```
+
+#### Focus Management
+- Focus indicators: 2px solid primary color outline
+- Focus trap in modals
+- Skip links for complex suggestion lists
+- Focus restoration after modal close
+
+---
+
+## 🔧 Technical Implementation
+
+### CSS Custom Properties
+
 ```scss
-.load-intensity-bg {
-  opacity: 0;
-  transition: opacity 0.2s ease;
+:root {
+  // AI Component Variables
+  --ai-suggestion-padding: 1rem;
+  --ai-suggestion-border-radius: 0.375rem;
+  --ai-suggestion-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+  --ai-suggestion-shadow-hover: 0 0.25rem 0.5rem rgba(0,0,0,0.15);
   
-  &.load-low { background: linear-gradient(135deg, rgba(25, 135, 84, 0.1), rgba(25, 135, 84, 0.05)); }
-  &.load-medium { background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05)); }
-  &.load-high { background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05)); }
+  // Animation Timings
+  --ai-transition-fast: 0.15s ease;
+  --ai-transition-normal: 0.3s ease;
+  --ai-transition-slow: 0.5s ease;
+  
+  // Z-Index Scale
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+```
+
+### Component Base Classes
+
+```scss
+// Base AI Component
+.ai-component {
+  font-family: var(--font-family-base);
+  transition: var(--ai-transition-normal);
+  
+  &:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
 }
 
-.calendar-slot:hover .load-intensity-bg {
-  opacity: 1;
+// Base Suggestion Card
+.suggestion-card {
+  @extend .ai-component;
+  
+  padding: var(--ai-suggestion-padding);
+  border-radius: var(--ai-suggestion-border-radius);
+  border: 1px solid var(--border-color);
+  background: white;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--ai-suggestion-shadow-hover);
+  }
+  
+  &.selected {
+    background: var(--primary-transparent);
+    border-left: 3px solid var(--primary);
+  }
+  
+  &:focus {
+    @extend :focus-visible;
+  }
+}
+
+// Base Badge Styling
+.badge-ai {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  
+  &.badge-ai-score {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+    color: white;
+  }
+  
+  &.badge-ai-confidence {
+    background: linear-gradient(135deg, var(--success) 0%, var(--info) 100%);
+    color: white;
+  }
 }
 ```
 
-### 3. Confidence Badge System
-```html
-<!-- Confidence levels with appropriate colors -->
-<span className="badge bg-success-transparent text-success">95-100% Optimal</span>
-<span className="badge bg-warning-transparent text-warning">80-94% Good</span>
-<span className="badge bg-info-transparent text-info">65-79% Fair</span>
-<span className="badge bg-danger-transparent text-danger">Below 65% Poor</span>
+### Animation Keyframes
+
+```scss
+// Loading Animation
+@keyframes ai-pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Suggestion Appear
+@keyframes suggestion-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Confidence Fill
+@keyframes confidence-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--confidence-percent);
+  }
+}
+
+// Usage
+.ai-loading {
+  animation: ai-pulse 2s infinite;
+}
+
+.suggestion-card {
+  animation: suggestion-appear 0.3s ease-out;
+}
+
+.confidence-bar-fill {
+  animation: confidence-fill 1s ease-out;
+}
 ```
 
-## Workflow Documentation
+### State Management Patterns
 
-### User Journey Map: Calendar Entry Point
+```scss
+// Loading States
+.ai-component {
+  &.loading {
+    pointer-events: none;
+    opacity: 0.7;
+    
+    .ai-content {
+      filter: blur(1px);
+    }
+    
+    .loading-indicator {
+      display: block;
+    }
+  }
+}
 
-1. **Initial State**: Doctor views appointments calendar with Smart Scheduling toggle ON
-2. **Slot Discovery**: Hover over available slots reveals intelligence overlay with metrics
-3. **Suggestion Trigger**: Click empty slot opens Smart Suggestions popover
-4. **Recommendation Review**: View top 3 AI-recommended alternatives with rationale
-5. **Selection**: One-click booking or request more options
-6. **Confirmation**: Standard booking flow with AI optimization notes
+// Error States
+.ai-component {
+  &.error {
+    border-color: var(--danger);
+    background: var(--danger-transparent);
+    
+    .error-message {
+      color: var(--danger);
+      display: block;
+    }
+  }
+}
 
-### User Journey Map: New Appointment Form Entry Point
-
-1. **Form Access**: Click "Smart Book" button opens enhanced appointment form
-2. **Progressive Enhancement**: Each field selection triggers real-time AI suggestions
-3. **Conflict Detection**: Inline warnings appear with auto-resolution options
-4. **Live Suggestions**: Right panel updates with ranked time slot recommendations
-5. **One-tap Filling**: Click suggestion auto-populates form fields
-6. **Final Review**: Confirm appointment with AI optimization summary
-
-### State Transitions
-
-#### Loading States
-```html
-<!-- Suggestion Loading -->
-<div className="d-flex align-items-center gap-2">
-  <div className="spinner-border spinner-border-sm text-primary"></div>
-  <span className="fs-13">Analyzing optimal slots...</span>
-</div>
-
-<!-- Slot Analysis Loading -->
-<div className="slot-analyzing">
-  <div className="badge bg-primary-transparent text-primary">
-    <i className="ti ti-loader-2 spin me-1"></i>Processing
-  </div>
-</div>
+// Success States
+.ai-component {
+  &.success {
+    border-color: var(--success);
+    
+    .success-indicator {
+      color: var(--success);
+      display: inline-block;
+    }
+  }
+}
 ```
 
-#### Error States
-```html
-<!-- AI Service Error -->
-<div className="alert alert-warning d-flex align-items-center">
-  <i className="ti ti-alert-triangle me-2"></i>
-  <div>
-    <small><strong>Smart suggestions unavailable</strong></small>
-    <small className="d-block">Manual scheduling available</small>
-  </div>
-</div>
+---
 
-<!-- Conflict Error -->
-<div className="alert alert-danger d-flex align-items-center">
-  <i className="ti ti-x-circle me-2"></i>
-  <div>
-    <small><strong>Scheduling conflict detected</strong></small>
-    <small className="d-block">Please select alternative time</small>
-  </div>
-</div>
-```
+## 📋 Component Usage Guidelines
 
-#### Empty States
-```html
-<!-- No Suggestions Available -->
-<div className="empty-suggestions text-center p-4">
-  <i className="ti ti-calendar-off text-muted fs-48 mb-3"></i>
-  <h6 className="text-muted">No optimal slots found</h6>
-  <p className="text-muted fs-13 mb-3">Try adjusting your criteria or selecting a different date</p>
-  <button className="btn btn-outline-primary btn-sm">
-    <i className="ti ti-adjustments me-1"></i>Adjust Parameters
-  </button>
-</div>
-```
+### Do's ✅
 
-## Accessibility Features
+1. **Maintain Visual Hierarchy**
+   - Use established font scales
+   - Respect spacing systems
+   - Follow color patterns
 
-### ARIA Labels and Roles
-```html
-<!-- Smart Toggle -->
-<div className="form-check form-switch" role="switch" aria-label="Enable smart scheduling recommendations">
-  <input className="form-check-input" type="checkbox" id="smartMode" aria-describedby="smartModeDescription">
-  <label className="form-check-label" for="smartMode">Smart Mode</label>
-</div>
-<div id="smartModeDescription" className="visually-hidden">
-  Enable AI-powered scheduling recommendations and optimization
-</div>
+2. **Provide Clear Feedback**
+   - Show loading states during AI processing
+   - Display confidence levels prominently
+   - Explain AI reasoning in simple terms
 
-<!-- Confidence Indicators -->
-<span className="badge bg-success-transparent text-success" 
-      role="status" 
-      aria-label="High confidence recommendation, 95 percent optimal">
-  95% Optimal
-</span>
+3. **Ensure Accessibility**
+   - Include proper ARIA labels
+   - Test with screen readers
+   - Maintain keyboard navigation
 
-<!-- Interactive Suggestions -->
-<button type="button" 
-        className="btn btn-success btn-sm w-100"
-        aria-label="Book appointment for today at 10:30 AM, 96 percent optimal match">
-  <i className="ti ti-mouse me-1" aria-hidden="true"></i>
-  One-tap Fill
-</button>
-```
+4. **Performance Optimization**
+   - Debounce API calls (300ms)
+   - Use lazy loading for heavy components
+   - Implement proper error boundaries
 
-### Keyboard Navigation
-- Tab order: Smart toggle → suggestions → actions
-- Enter/Space: Activate suggestions and actions
-- Escape: Close popovers and suggestions panel
-- Arrow keys: Navigate between suggestions
+### Don'ts ❌
 
-### Color Contrast Compliance
-- All text maintains minimum 4.5:1 contrast ratio
-- Interactive elements have 3:1 contrast minimum
-- Focus indicators provide clear visual feedback
-- Color information supplemented with icons/text
+1. **Don't Override Core Colors**
+   - Stick to defined color palette
+   - Don't create new color variables without approval
+   - Maintain contrast ratios
 
-## Responsive Behavior
+2. **Don't Break Responsive Flow**
+   - Don't use fixed pixel widths
+   - Don't ignore mobile breakpoints
+   - Don't assume screen sizes
 
-### Mobile Adaptations (< 768px)
-- Smart suggestions panel becomes bottom sheet modal
-- Calendar tooltips become full-screen overlays
-- One-tap actions maintain touch-friendly 44px minimum target size
-- Horizontal scroll for suggestion cards
+3. **Don't Hide AI Functionality**
+   - Always provide opt-out mechanisms
+   - Don't force AI suggestions
+   - Don't hide confidence levels
 
-### Tablet Adaptations (768px - 1024px)
-- Smart suggestions panel maintains fixed width
-- Calendar grid adapts to available space
-- Touch interactions optimized for finger navigation
+4. **Don't Ignore Loading States**
+   - Always show feedback during processing
+   - Don't leave users guessing
+   - Don't skip error handling
 
-### Desktop Enhancements (> 1024px)
-- Hover interactions for detailed tooltips
-- Keyboard shortcuts for power users
-- Multiple suggestion panels can be open simultaneously
+---
 
-## Integration Points
+## 🧪 Testing Checklist
 
-### Existing Components Extended
-1. **DatePicker**: Enhanced with smart date suggestions
-2. **Select Components**: Real-time AI filtering
-3. **Badge System**: New confidence and score variants
-4. **Alert Components**: Conflict detection styling
-5. **Card Components**: Suggestion card variations
+### Visual Testing
 
-### New Components Added
-1. **SmartToggle**: Consistent AI feature enablement
-2. **ConfidenceBadge**: Standardized confidence display
-3. **SuggestionCard**: Reusable recommendation container
-4. **ConflictAlert**: Specialized warning component
-5. **LoadIndicator**: Slot intensity visualization
+- [ ] Components match design specifications exactly
+- [ ] Color contrast meets WCAG AA standards
+- [ ] Typography scales properly across devices
+- [ ] Spacing follows established patterns
+- [ ] Hover states work correctly
+- [ ] Focus indicators are visible
 
-This comprehensive design system ensures the Smart Scheduling feature integrates seamlessly with the existing healthcare platform while providing powerful AI-assisted functionality that enhances rather than complicates the user experience.
+### Functional Testing
+
+- [ ] AI toggle switches modes correctly
+- [ ] Suggestions update when form changes
+- [ ] Conflict detection works in real-time
+- [ ] Calendar interactions trigger suggestions
+- [ ] Form auto-fills from suggestions
+- [ ] Loading states display appropriately
+
+### Accessibility Testing
+
+- [ ] Screen reader announces all content
+- [ ] Keyboard navigation works completely
+- [ ] Focus management is logical
+- [ ] ARIA labels are descriptive
+- [ ] Color-blind users can distinguish states
+- [ ] Voice control compatibility
+
+### Responsive Testing
+
+- [ ] Layout adapts to all screen sizes
+- [ ] Touch targets meet size requirements (44px)
+- [ ] Content remains readable at all zooms
+- [ ] Horizontal scrolling is avoided
+- [ ] Performance is acceptable on mobile
+
+---
+
+## 📚 Reference Materials
+
+### Design Resources
+- Figma Component Library: [Link to Figma]
+- Icon Library: Tabler Icons
+- Color Palette Generator: [Coolors.co](https://coolors.co)
+- Accessibility Checker: [WAVE](https://wave.webaim.org)
+
+### Development Resources
+- Component Storybook: [Link to Storybook]
+- CSS Documentation: [MDN Web Docs](https://developer.mozilla.org)
+- React Patterns: [React Patterns](https://reactpatterns.com)
+- TypeScript Handbook: [TypeScript Docs](https://www.typescriptlang.org/docs)
+
+### Testing Tools
+- Jest + React Testing Library
+- Cypress for E2E testing
+- axe-core for accessibility testing
+- Lighthouse for performance testing
+
+---
+
+*This design system documentation ensures consistent implementation of Smart Scheduling components while maintaining the integrity of the existing healthcare platform design system.*
