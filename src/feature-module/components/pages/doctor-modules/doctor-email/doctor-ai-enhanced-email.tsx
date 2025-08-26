@@ -49,8 +49,8 @@ interface DoctorEmailFilters {
 
 const DoctorAIEnhancedEmail = () => {
   const [showMore, setShowMore] = useState(false);
-  const [showMore2, setShowMore2] = useState(false);
-  const [showMore3, setShowMore3] = useState(false);
+  // const [showMore2, setShowMore2] = useState(false);
+  // const [showMore3, setShowMore3] = useState(false);
   const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set());
   const [emails, setEmails] = useState<DoctorEmailMessage[]>([]);
   const [filters, setFilters] = useState<DoctorEmailFilters>({
