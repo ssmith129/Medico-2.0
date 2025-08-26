@@ -444,7 +444,264 @@ const SmartAppointmentCalendar = () => {
                   <i className="ti ti-filter text-gray-5 me-1" />
                   Filters
                 </Link>
-                {/* Standard filters content would go here */}
+                <div
+                  className="dropdown-menu dropdown-lg dropdown-menu-end filter-dropdown p-0"
+                  id="filter-dropdown"
+                >
+                  <div className="d-flex align-items-center justify-content-between border-bottom filter-header">
+                    <h4 className="mb-0 fw-bold">Filter</h4>
+                    <div className="d-flex align-items-center">
+                      <Link
+                        to="#"
+                        className="link-danger text-decoration-underline"
+                      >
+                        Clear All
+                      </Link>
+                    </div>
+                  </div>
+                  <form action="#">
+                    <div className="filter-body pb-0">
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center justify-content-between">
+                          <label className="form-label">Patient</label>
+                          <Link to="#" className="link-primary mb-1">
+                            Reset
+                          </Link>
+                        </div>
+                        <div className="dropdown">
+                          <Link
+                            to="#"
+                            className="dropdown-toggle btn bg-white d-flex align-items-center justify-content-start fs-13 p-2 fw-normal border"
+                            data-bs-toggle="dropdown"
+                          >
+                            Select <i className="ti ti-chevron-down ms-auto" />
+                          </Link>
+                          <div className="dropdown-menu shadow-lg w-100 dropdown-info p-3">
+                            <div className="mb-3">
+                              <div className="input-icon-start input-icon position-relative">
+                                <span className="input-icon-addon fs-12">
+                                  <i className="ti ti-search" />
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control form-control-md"
+                                  placeholder="Search"
+                                />
+                              </div>
+                            </div>
+                            <ul className="mb-3">
+                              <li className="mb-1">
+                                <label className="dropdown-item px-2 d-flex align-items-center text-dark">
+                                  <input
+                                    className="form-check-input m-0 me-2"
+                                    type="checkbox"
+                                  />
+                                  <span className="avatar avatar-xs rounded-circle me-2">
+                                    <ImageWithBasePath
+                                      src="assets/img/users/user-33.jpg"
+                                      className="flex-shrink-0 rounded-circle"
+                                      alt="img"
+                                    />
+                                  </span>
+                                  Alberto Ripley
+                                </label>
+                              </li>
+                              <li className="mb-1">
+                                <label className="dropdown-item px-2 d-flex align-items-center text-dark">
+                                  <input
+                                    className="form-check-input m-0 me-2"
+                                    type="checkbox"
+                                  />
+                                  <span className="avatar avatar-xs rounded-circle me-2">
+                                    <ImageWithBasePath
+                                      src="assets/img/users/user-12.jpg"
+                                      className="flex-shrink-0 rounded-circle"
+                                      alt="img"
+                                    />
+                                  </span>
+                                  Bernard Griffith
+                                </label>
+                              </li>
+                            </ul>
+                            <div className="row g-2">
+                              <div className="col-6">
+                                <Link
+                                  to="#"
+                                  className="btn btn-outline-white w-100 close-filter"
+                                >
+                                  Cancel
+                                </Link>
+                              </div>
+                              <div className="col-6">
+                                <Link to="#" className="btn btn-primary w-100">
+                                  Select
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center justify-content-between">
+                          <label className="form-label">Doctor</label>
+                          <Link to="#" className="link-primary mb-1">
+                            Reset
+                          </Link>
+                        </div>
+                        <div className="dropdown">
+                          <Link
+                            to="#"
+                            className="dropdown-toggle btn bg-white d-flex align-items-center justify-content-start fs-13 p-2 fw-normal border"
+                            data-bs-toggle="dropdown"
+                          >
+                            Select <i className="ti ti-chevron-down ms-auto" />
+                          </Link>
+                          <div className="dropdown-menu shadow-lg w-100 dropdown-info p-3">
+                            <div className="mb-3">
+                              <div className="input-icon-start input-icon position-relative">
+                                <span className="input-icon-addon fs-12">
+                                  <i className="ti ti-search" />
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control form-control-md"
+                                  placeholder="Search"
+                                />
+                              </div>
+                            </div>
+                            <ul className="mb-3">
+                              <li className="mb-1">
+                                <label className="dropdown-item px-2 d-flex align-items-center text-dark">
+                                  <input
+                                    className="form-check-input m-0 me-2"
+                                    type="checkbox"
+                                  />
+                                  <span className="avatar avatar-xs rounded-circle me-2">
+                                    <ImageWithBasePath
+                                      src="assets/img/doctors/doctor-01.jpg"
+                                      className="flex-shrink-0 rounded-circle"
+                                      alt="img"
+                                    />
+                                  </span>
+                                  Dr. Mick Thompson
+                                </label>
+                              </li>
+                              <li className="mb-1">
+                                <label className="dropdown-item px-2 d-flex align-items-center text-dark">
+                                  <input
+                                    className="form-check-input m-0 me-2"
+                                    type="checkbox"
+                                  />
+                                  <span className="avatar avatar-xs rounded-circle me-2">
+                                    <ImageWithBasePath
+                                      src="assets/img/doctors/doctor-02.jpg"
+                                      className="flex-shrink-0 rounded-circle"
+                                      alt="img"
+                                    />
+                                  </span>
+                                  Dr. Sarah Johnson
+                                </label>
+                              </li>
+                            </ul>
+                            <div className="row g-2">
+                              <div className="col-6">
+                                <Link
+                                  to="#"
+                                  className="btn btn-outline-white w-100 close-filter"
+                                >
+                                  Cancel
+                                </Link>
+                              </div>
+                              <div className="col-6">
+                                <Link to="#" className="btn btn-primary w-100">
+                                  Select
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <div className="d-flex align-items-center justify-content-between">
+                          <label className="form-label">Status</label>
+                          <Link to="#" className="link-primary mb-1">
+                            Reset
+                          </Link>
+                        </div>
+                        <div className="dropdown">
+                          <Link
+                            to="#"
+                            className="dropdown-toggle btn bg-white d-flex align-items-center justify-content-start fs-13 p-2 fw-normal border"
+                            data-bs-toggle="dropdown"
+                          >
+                            Select <i className="ti ti-chevron-down ms-auto" />
+                          </Link>
+                          <div className="dropdown-menu shadow-lg w-100 dropdown-info p-3">
+                            <ul className="mb-3">
+                              <li className="mb-1">
+                                <label className="dropdown-item px-2 d-flex align-items-center text-dark">
+                                  <input
+                                    className="form-check-input m-0 me-2"
+                                    type="checkbox"
+                                  />
+                                  Confirmed
+                                </label>
+                              </li>
+                              <li className="mb-1">
+                                <label className="dropdown-item px-2 d-flex align-items-center text-dark">
+                                  <input
+                                    className="form-check-input m-0 me-2"
+                                    type="checkbox"
+                                  />
+                                  Tentative
+                                </label>
+                              </li>
+                              <li className="mb-1">
+                                <label className="dropdown-item px-2 d-flex align-items-center text-dark">
+                                  <input
+                                    className="form-check-input m-0 me-2"
+                                    type="checkbox"
+                                  />
+                                  Cancelled
+                                </label>
+                              </li>
+                            </ul>
+                            <div className="row g-2">
+                              <div className="col-6">
+                                <Link
+                                  to="#"
+                                  className="btn btn-outline-white w-100 close-filter"
+                                >
+                                  Cancel
+                                </Link>
+                              </div>
+                              <div className="col-6">
+                                <Link to="#" className="btn btn-primary w-100">
+                                  Select
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="filter-footer d-flex align-items-center justify-content-end border-top">
+                      <Link
+                        to="#"
+                        className="btn btn-light btn-md me-2 fw-medium"
+                        id="close-filter"
+                      >
+                        Close
+                      </Link>
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-md fw-medium"
+                      >
+                        Filter
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
               
               <div className="dropdown">
@@ -512,7 +769,76 @@ const SmartAppointmentCalendar = () => {
                 {/* AI Slot Overlays - would be positioned absolutely over time slots */}
                 {isAIMode && (
                   <div className="slot-overlays position-absolute w-100 h-100 top-0 start-0 pointer-events-none">
-                    {/* Slot scoring overlays would be rendered here based on calendar geometry */}
+                    {slotAnalytics.map((slot) => (
+                      <div
+                        key={slot.slotId}
+                        className="slot-score-overlay"
+                        style={{
+                          position: 'absolute',
+                          top: `${calculateSlotPosition(slot.slotId).top}%`,
+                          left: `${calculateSlotPosition(slot.slotId).left}%`,
+                          width: '120px',
+                          height: '25px',
+                          zIndex: 1000,
+                        }}
+                        onMouseEnter={() => setHoveredSlot(slot.slotId)}
+                        onMouseLeave={() => setHoveredSlot(null)}
+                      >
+                        {hoveredSlot === slot.slotId && (
+                          <div className="slot-tooltip bg-dark text-white p-2 rounded shadow-lg">
+                            <div className="d-flex align-items-center justify-content-between mb-1">
+                              <small className="fw-bold">Slot Score</small>
+                              <span className={`badge badge-soft-${getScoreColor(slot.score)} fs-10`}>
+                                {slot.score}
+                              </span>
+                            </div>
+                            <div className="tooltip-metrics">
+                              <div className="d-flex justify-content-between">
+                                <small>Load:</small>
+                                <small>{slot.loadPercentage}%</small>
+                              </div>
+                              <div className="d-flex justify-content-between">
+                                <small>No-Show Risk:</small>
+                                <small className={`text-${slot.noShowRisk > 20 ? 'danger' : slot.noShowRisk > 10 ? 'warning' : 'success'}`}>
+                                  {slot.noShowRisk}%
+                                </small>
+                              </div>
+                              <div className="d-flex justify-content-between">
+                                <small>Status:</small>
+                                <small className={`text-${slot.recommendation === 'Optimal' ? 'success' : slot.recommendation === 'Highly Recommended' ? 'primary' : 'warning'}`}>
+                                  {slot.recommendation}
+                                </small>
+                              </div>
+                              <div className="mt-1">
+                                <small className="text-muted">Best for:</small>
+                                <div className="d-flex gap-1 mt-1">
+                                  {slot.optimalFor.map((type, idx) => (
+                                    <span key={idx} className="badge bg-light text-dark fs-10">
+                                      {type}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="score-indicator">
+                          <div
+                            className={`score-bar bg-${getScoreColor(slot.score)}`}
+                            style={{
+                              width: '100%',
+                              height: '3px',
+                              borderRadius: '2px',
+                              opacity: 0.8
+                            }}
+                          ></div>
+                          <small className={`score-text text-${getScoreColor(slot.score)} fw-bold fs-10`}>
+                            {slot.score}
+                          </small>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
