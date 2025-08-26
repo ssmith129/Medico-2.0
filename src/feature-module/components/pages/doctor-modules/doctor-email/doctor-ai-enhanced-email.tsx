@@ -62,7 +62,7 @@ const DoctorAIEnhancedEmail = () => {
     patientRelated: false,
     actionRequired: false
   });
-  const [doctorProfile, setDoctorProfile] = useState({
+  const [doctorProfile] = useState({
     name: "Dr. Sarah Chen",
     specialty: "Cardiology",
     department: "Internal Medicine",
