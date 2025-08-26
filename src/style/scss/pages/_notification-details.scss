@@ -1,0 +1,539 @@
+@use "../variables" as *;
+@use "../utils/mixins" as *;
+
+.notification-detail-modal {
+  .ant-modal-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 24px;
+    
+    .notification-detail-header {
+      .priority-badge {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        i {
+          font-size: 20px;
+        }
+      }
+      
+      .badge {
+        font-size: 10px;
+        font-weight: $font-weight-semibold;
+        letter-spacing: 0.5px;
+        padding: 4px 8px;
+      }
+    }
+  }
+
+  .ant-modal-body {
+    padding: 24px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .ant-modal-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 16px 24px;
+    
+    .notification-meta {
+      .fw-medium {
+        color: var(--primary);
+      }
+    }
+  }
+}
+
+// AI Insight Section
+.ai-insight-section {
+  border: 1px solid rgba(var(--primary-rgb), 0.1);
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: shimmer 2s ease-in-out infinite;
+  }
+  
+  .ti-robot {
+    font-size: 18px;
+    animation: pulse 2s infinite;
+  }
+}
+
+// Emergency Detail View
+.emergency-detail-view {
+  .emergency-header {
+    border: 2px solid var(--danger);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: emergency-flash 2s ease-in-out infinite;
+    }
+    
+    .emergency-pulse-icon {
+      animation: emergency-pulse 1.5s ease-in-out infinite;
+    }
+  }
+  
+  .response-timer {
+    .timer-display {
+      font-family: 'Courier New', monospace;
+      animation: timer-blink 1s ease-in-out infinite;
+    }
+  }
+  
+  .response-actions {
+    .btn {
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--box-shadow-sm);
+      }
+    }
+  }
+}
+
+// Appointment Detail View
+.appointment-detail-view {
+  .info-item {
+    .avatar-sm {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--light);
+    }
+  }
+  
+  .appointment-actions {
+    border: 1px solid var(--border-color);
+    
+    .btn {
+      transition: all 0.2s ease;
+      font-weight: $font-weight-medium;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--box-shadow-sm);
+      }
+    }
+  }
+}
+
+// Medical Detail View
+.medical-detail-view {
+  .results-grid {
+    .result-item {
+      transition: all 0.2s ease;
+      border-color: var(--border-color) !important;
+      
+      &:hover {
+        border-color: var(--primary) !important;
+        box-shadow: var(--box-shadow-sm);
+        transform: translateY(-1px);
+      }
+      
+      .result-name {
+        font-weight: $font-weight-medium;
+        color: var(--heading-color);
+      }
+      
+      .result-value {
+        font-family: 'Courier New', monospace;
+        font-size: 16px;
+      }
+    }
+  }
+  
+  .medical-notes {
+    .bg-light {
+      border-left: 4px solid var(--info);
+    }
+  }
+  
+  .medical-actions {
+    .action-item {
+      transition: all 0.2s ease;
+      border-radius: 8px;
+      
+      &:hover {
+        transform: translateX(5px);
+        box-shadow: var(--box-shadow-sm);
+      }
+      
+      i {
+        font-size: 18px;
+      }
+    }
+    
+    .action-buttons {
+      .btn {
+        transition: all 0.2s ease;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: var(--box-shadow-sm);
+        }
+      }
+    }
+  }
+}
+
+// Administrative View
+.administrative-view {
+  .btn {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--box-shadow-sm);
+    }
+  }
+}
+
+// Action History Timeline
+.action-history {
+  .ant-timeline {
+    .ant-timeline-item {
+      .timeline-content {
+        .fw-medium {
+          color: var(--heading-color);
+        }
+      }
+    }
+  }
+}
+
+// Related Notifications
+.related-notifications {
+  .list-group-item {
+    transition: all 0.2s ease;
+    border-radius: 8px !important;
+    margin-bottom: 8px;
+    
+    &:hover {
+      background-color: var(--light);
+      transform: translateX(5px);
+    }
+    
+    .btn {
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+// Notification Detail Tabs
+.notification-detail-tabs {
+  .ant-tabs-nav {
+    margin-bottom: 24px;
+    
+    &::before {
+      border-bottom-color: var(--border-color);
+    }
+    
+    .ant-tabs-tab {
+      padding: 12px 16px;
+      
+      &.ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: var(--primary);
+          font-weight: $font-weight-semibold;
+        }
+      }
+      
+      .ant-tabs-tab-btn {
+        transition: all 0.2s ease;
+        
+        &:hover {
+          color: var(--primary);
+        }
+      }
+    }
+    
+    .ant-tabs-ink-bar {
+      background: var(--primary);
+    }
+  }
+  
+  .ant-tabs-content-holder {
+    .ant-tabs-content {
+      .ant-tabs-tabpane {
+        &.ant-tabs-tabpane-active {
+          animation: fadeInUp 0.3s ease-in-out;
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes emergency-flash {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes emergency-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes timer-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive Design
+@include respond-below(lg) {
+  .notification-detail-modal {
+    .ant-modal {
+      width: 95% !important;
+      margin: 10px;
+    }
+    
+    .ant-modal-body {
+      padding: 16px;
+    }
+  }
+  
+  .emergency-detail-view {
+    .row {
+      .col-md-8,
+      .col-md-4 {
+        margin-bottom: 20px;
+      }
+    }
+  }
+  
+  .medical-detail-view {
+    .results-grid {
+      .row {
+        .col-sm-6 {
+          margin-bottom: 12px;
+        }
+      }
+    }
+    
+    .row {
+      .col-md-8,
+      .col-md-4 {
+        margin-bottom: 20px;
+      }
+    }
+  }
+  
+  .appointment-detail-view {
+    .row {
+      .col-md-6 {
+        margin-bottom: 16px;
+      }
+    }
+    
+    .appointment-actions {
+      .d-flex {
+        flex-direction: column;
+        
+        .btn {
+          margin-bottom: 8px;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@include respond-below(md) {
+  .notification-detail-modal {
+    .notification-detail-header {
+      .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        
+        .priority-badge {
+          margin-bottom: 12px;
+          margin-right: 0 !important;
+        }
+      }
+    }
+  }
+  
+  .emergency-detail-view {
+    .emergency-header {
+      .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        
+        .emergency-pulse-icon {
+          margin-bottom: 12px;
+          margin-right: 0 !important;
+        }
+      }
+    }
+  }
+  
+  .medical-detail-view {
+    .results-grid {
+      .col-sm-6 {
+        width: 100%;
+      }
+    }
+    
+    .medical-actions {
+      .action-buttons {
+        .btn {
+          font-size: 12px;
+          padding: 8px 12px;
+        }
+      }
+    }
+  }
+}
+
+// Dark Theme Support
+:root[data-bs-theme=dark] {
+  .notification-detail-modal {
+    .ant-modal-content {
+      background: var(--dark);
+      color: var(--light);
+    }
+    
+    .ant-modal-header {
+      background: var(--dark);
+      border-bottom-color: var(--border-color);
+      
+      .ant-modal-title {
+        color: var(--light);
+      }
+    }
+    
+    .ant-modal-footer {
+      background: var(--dark);
+      border-top-color: var(--border-color);
+    }
+  }
+  
+  .ai-insight-section {
+    background: rgba(var(--primary-rgb), 0.1) !important;
+    border-color: rgba(var(--primary-rgb), 0.2);
+  }
+  
+  .emergency-detail-view {
+    .card {
+      background: var(--dark);
+      border-color: var(--border-color);
+      color: var(--light);
+    }
+  }
+  
+  .medical-detail-view {
+    .results-grid {
+      .result-item {
+        background: var(--gray-800);
+        border-color: var(--border-color) !important;
+        color: var(--light);
+      }
+    }
+    
+    .bg-light {
+      background: var(--gray-800) !important;
+    }
+  }
+  
+  .related-notifications {
+    .list-group-item {
+      &:hover {
+        background-color: var(--gray-800) !important;
+      }
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .notification-detail-modal {
+    .ant-modal-footer,
+    .modal-actions,
+    .action-buttons,
+    .response-actions,
+    .appointment-actions .btn {
+      display: none !important;
+    }
+    
+    .ant-modal {
+      box-shadow: none !important;
+      border: 1px solid #ccc !important;
+    }
+    
+    .emergency-detail-view {
+      .emergency-header {
+        &::before {
+          display: none;
+        }
+      }
+    }
+  }
+}
