@@ -471,8 +471,8 @@ const AIFilterControls: React.FC<FilterControlsProps> = ({
               <RangePicker
                 style={{ width: '100%', marginTop: '0.5rem' }}
                 value={filters.timeframe.custom}
-                onChange={(dates) => updateFilters({ 
-                  timeframe: { ...filters.timeframe, custom: dates }
+                onChange={(dates) => updateFilters({
+                  timeframe: { ...filters.timeframe, custom: dates || [null, null] }
                 })}
               />
             )}
