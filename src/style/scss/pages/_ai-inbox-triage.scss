@@ -1,0 +1,546 @@
+// AI Inbox Triage Styles
+.ai-inbox-triage {
+  .page-header {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    
+    .ai-branding {
+      position: relative;
+      
+      &::after {
+        content: "";
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 8px;
+        height: 8px;
+        background: #28a745;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+    }
+  }
+
+  // Triage Metrics Cards
+  .triage-metrics {
+    .ant-card {
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .ant-statistic-title {
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 0.875rem;
+      }
+
+      .ant-statistic-content {
+        color: #495057;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Priority Distribution
+  .priority-overview {
+    .priority-stat {
+      .ant-progress {
+        .ant-progress-bg {
+          height: 6px !important;
+          border-radius: 3px;
+        }
+      }
+    }
+  }
+
+  // Filter Controls
+  .triage-filters {
+    .form-label {
+      color: #495057;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-select {
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      
+      &:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+    }
+
+    .btn-group {
+      .dropdown-menu {
+        border: 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+    }
+  }
+
+  // Triage Cards
+  .triage-list {
+    .triage-card {
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      }
+
+      &.unread-card {
+        border-left: 4px solid #0d6efd;
+        background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+      }
+
+      .priority-indicator {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+
+      .avatar-wrapper {
+        .avatar-lg {
+          width: 48px;
+          height: 48px;
+          object-fit: cover;
+          border: 2px solid white;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      .sender-info {
+        .fw-medium {
+          font-size: 1rem;
+          color: #212529;
+        }
+      }
+
+      .notification-message {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #495057;
+      }
+
+      // AI Actions
+      .ai-actions {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        margin: 0 -4px;
+
+        .btn {
+          border-radius: 6px;
+          font-weight: 500;
+          font-size: 0.875rem;
+          padding: 0.375rem 0.75rem;
+          transition: all 0.2s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+          }
+        }
+      }
+
+      // Metadata Tags
+      .metadata-tags {
+        .badge {
+          border-radius: 4px;
+          font-weight: 500;
+          padding: 0.25rem 0.5rem;
+        }
+      }
+
+      // Card Actions
+      .dropdown-menu {
+        border: 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        
+        .dropdown-item {
+          padding: 0.5rem 1rem;
+          font-size: 0.875rem;
+          
+          &:hover {
+            background-color: #f8f9fa;
+          }
+        }
+      }
+    }
+  }
+
+  // Badges and Status Indicators
+  .badge {
+    &.bg-primary {
+      background-color: #0d6efd !important;
+    }
+    
+    &.bg-danger-transparent {
+      background-color: rgba(220, 53, 69, 0.1) !important;
+      color: #dc3545 !important;
+    }
+    
+    &.bg-warning-transparent {
+      background-color: rgba(255, 193, 7, 0.1) !important;
+      color: #ffc107 !important;
+    }
+    
+    &.bg-info-transparent {
+      background-color: rgba(13, 202, 240, 0.1) !important;
+      color: #0dcaf0 !important;
+    }
+    
+    &.bg-secondary-transparent {
+      background-color: rgba(108, 117, 125, 0.1) !important;
+      color: #6c757d !important;
+    }
+  }
+
+  // Animation Classes
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  // Loading States
+  .loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  // Responsive Design
+  @media (max-width: 768px) {
+    .page-header {
+      padding: 1rem !important;
+      
+      .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+        
+        .d-flex:last-child {
+          flex-direction: row;
+          justify-content: flex-start;
+        }
+      }
+    }
+
+    .triage-metrics {
+      .row {
+        .col-xl-3 {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+
+    .priority-overview {
+      .row {
+        .col-md-3 {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+
+    .triage-filters {
+      .row {
+        .col-md-2,
+        .col-md-4 {
+          margin-bottom: 1rem;
+        }
+      }
+    }
+
+    .triage-card {
+      .card-body {
+        padding: 1rem !important;
+      }
+
+      .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .ai-actions {
+        .d-flex {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    .triage-filters {
+      .d-flex.gap-2 {
+        flex-direction: column;
+        
+        .btn,
+        .btn-group {
+          width: 100%;
+        }
+      }
+    }
+
+    .metadata-tags {
+      .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+    }
+  }
+
+  // Dark Mode Support
+  [data-theme="dark"] & {
+    .page-header {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      border-color: #404040;
+      color: #e0e0e0;
+    }
+
+    .triage-metrics .ant-card {
+      background-color: #1a1a1a;
+      border-color: #404040;
+      
+      .ant-statistic-title {
+        color: #b0b0b0;
+      }
+      
+      .ant-statistic-content {
+        color: #e0e0e0;
+      }
+    }
+
+    .priority-overview,
+    .triage-filters {
+      background-color: #1a1a1a;
+      border-color: #404040;
+      color: #e0e0e0;
+    }
+
+    .triage-card {
+      background-color: #1a1a1a;
+      border-color: #404040;
+      
+      &.unread-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2a2a3a 100%);
+      }
+      
+      .notification-message {
+        color: #b0b0b0;
+      }
+      
+      .ai-actions {
+        background-color: #2d2d2d;
+      }
+    }
+
+    .dropdown-menu {
+      background-color: #1a1a1a;
+      border-color: #404040;
+      
+      .dropdown-item {
+        color: #e0e0e0;
+        
+        &:hover {
+          background-color: #2d2d2d;
+        }
+      }
+    }
+  }
+
+  // High Contrast Mode
+  @media (prefers-contrast: high) {
+    .triage-card {
+      border: 2px solid #000;
+      
+      &.unread-card {
+        border-left: 6px solid #0000ff;
+      }
+    }
+
+    .priority-indicator {
+      border: 2px solid currentColor;
+    }
+
+    .badge {
+      border: 1px solid currentColor;
+    }
+  }
+
+  // Reduced Motion
+  @media (prefers-reduced-motion: reduce) {
+    .triage-card,
+    .priority-indicator,
+    .btn,
+    .form-select {
+      transition: none;
+    }
+
+    .animate-pulse,
+    .loading-skeleton {
+      animation: none;
+    }
+  }
+
+  // Print Styles
+  @media print {
+    .triage-filters,
+    .dropdown,
+    .ai-actions {
+      display: none !important;
+    }
+
+    .triage-card {
+      break-inside: avoid;
+      box-shadow: none !important;
+      border: 1px solid #000 !important;
+    }
+
+    .page-header {
+      background: white !important;
+      color: black !important;
+    }
+  }
+}
+
+// Utility Classes for AI Triage
+.ai-confidence-high {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.ai-confidence-medium {
+  color: #ffc107;
+  font-weight: 500;
+}
+
+.ai-confidence-low {
+  color: #dc3545;
+  font-weight: 400;
+}
+
+.priority-critical {
+  border-left: 4px solid #dc3545 !important;
+  background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+}
+
+.priority-urgent {
+  border-left: 4px solid #ffc107 !important;
+  background: linear-gradient(135deg, #fff 0%, #fffdf5 100%);
+}
+
+.priority-routine {
+  border-left: 4px solid #0dcaf0 !important;
+  background: linear-gradient(135deg, #fff 0%, #f0fdff 100%);
+}
+
+.priority-admin {
+  border-left: 4px solid #6c757d !important;
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+}
+
+// Animation Keyframes
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  from,
+  20%,
+  40%,
+  60%,
+  80%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  0% {
+    opacity: 0;
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+
+  20% {
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+
+  40% {
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale3d(1.03, 1.03, 1.03);
+  }
+
+  80% {
+    transform: scale3d(0.97, 0.97, 0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.5s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.bounce-in {
+  animation: bounceIn 0.8s ease-out;
+}
