@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Badge, DatePicker, Select, Slider, Switch, Tooltip, Popover, Checkbox, Button } from 'antd';
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
+import React, { useState, useMemo } from 'react';
+import { Badge, DatePicker, Select, Slider, Tooltip, Popover } from 'antd';
 import type { Dayjs } from 'dayjs';
 
 const { RangePicker } = DatePicker;
