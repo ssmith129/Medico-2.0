@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Scheduling - Enhanced New Appointment Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .bg-primary-transparent {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+        
+        .bg-success-transparent {
+            background-color: rgba(25, 135, 84, 0.1) !important;
+        }
+        
+        .bg-warning-transparent {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+        }
+        
+        .bg-info-transparent {
+            background-color: rgba(13, 202, 240, 0.1) !important;
+        }
+        
+        .bg-danger-transparent {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+        .suggestion-item {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .suggestion-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .reason-item {
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .confidence-badge {
+            font-size: 0.625rem;
+        }
+        
+        .live-update-indicator {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        
+        .spinner-pulse {
+            width: 12px;
+            height: 12px;
+            background-color: #0d6efd;
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .smart-suggestion-highlight {
+            background: linear-gradient(90deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);
+            border-left: 3px solid #0d6efd;
+            padding: 0.5rem;
+            border-radius: 0 4px 4px 0;
+            margin-top: 0.5rem;
+        }
+        
+        .one-tap-fill {
+            background: linear-gradient(135deg, #198754, #20c997);
+            border: none;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .one-tap-fill:hover {
+            background: linear-gradient(135deg, #157347, #1aa179);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+            color: white;
+        }
+        
+        .conflict-alert {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .metric-row {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container-fluid p-4">
+        <!-- Enhanced Form Header -->
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="mb-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h6 class="fw-bold mb-0 d-flex align-items-center">
+                            <i class="ti ti-chevron-left me-2"></i>
+                            <span>Appointments</span>
+                            <i class="ti ti-chevron-right mx-2 text-muted"></i>
+                            <span class="text-primary">Smart New Appointment</span>
+                        </h6>
+                        <div class="live-update-indicator">
+                            <div class="spinner-pulse me-2"></div>
+                            <span>AI analyzing...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Enhanced Appointment Form (Left Column) -->
+                    <div class="col-lg-7">
+                        <div class="card shadow-sm">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h5 class="fw-bold mb-0">New Appointment</h5>
+                                <div class="smart-mode-toggle">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="smartMode" checked>
+                                        <label class="form-check-label text-primary fw-medium" for="smartMode">
+                                            <i class="ti ti-brain me-1"></i>Smart Mode
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body">
+                                <!-- Appointment ID -->
+                                <div class="mb-3">
+                                    <label class="form-label mb-1 fw-medium">
+                                        Appointment ID <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" value="AP234354" disabled>
+                                </div>
+                                
+                                <!-- Patient Selection with Smart Context -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <label class="form-label mb-0 fw-medium">
+                                                    Patient <span class="text-danger">*</span>
+                                                </label>
+                                                <span class="badge bg-info-transparent text-info fs-12">
+                                                    <i class="ti ti-history me-1"></i>Last visit: 2 weeks ago
+                                                </span>
+                                            </div>
+                                            <select class="form-select" id="patientSelect">
+                                                <option selected>Alberto Ripley</option>
+                                                <option>Susan Babin</option>
+                                                <option>Carol Lam</option>
+                                            </select>
+                                            <div class="smart-suggestion-highlight">
+                                                <small class="text-primary d-flex align-items-center">
+                                                    <i class="ti ti-brain fs-12 me-1"></i>
+                                                    Patient typically prefers morning appointments
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label mb-1 fw-medium">
+                                                Department <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select" id="departmentSelect">
+                                                <option selected>Cardiology</option>
+                                                <option>Neurology</option>
+                                                <option>General Medicine</option>
+                                            </select>
+                                            <div class="smart-suggestion-highlight">
+                                                <small class="text-primary d-flex align-items-center">
+                                                    <i class="ti ti-brain fs-12 me-1"></i>
+                                                    AI suggests Cardiology based on history
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Doctor and Appointment Type -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label mb-1 fw-medium">
+                                                Doctor <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select" id="doctorSelect">
+                                                <option selected>Dr. Johnson</option>
+                                                <option>Dr. Smith</option>
+                                                <option>Dr. Wilson</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label mb-1 fw-medium">
+                                                Appointment Type <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select">
+                                                <option selected>Follow-up Visit</option>
+                                                <option>General Consultation</option>
+                                                <option>Emergency</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Smart Date/Time Selection -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label mb-1 fw-medium">
+                                                Date of Appointment <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="date" class="form-control" id="appointmentDate" value="2025-01-15">
+                                            
+                                            <!-- Smart Date Suggestions -->
+                                            <div class="smart-date-suggestions mt-2">
+                                                <small class="text-muted d-block mb-1">Quick suggestions:</small>
+                                                <div class="d-flex gap-1 flex-wrap">
+                                                    <button type="button" class="btn btn-outline-primary btn-sm">Today</button>
+                                                    <button type="button" class="btn btn-outline-primary btn-sm">Tomorrow</button>
+                                                    <button type="button" class="btn btn-primary btn-sm">Next Mon</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label mb-1 fw-medium">
+                                                Time <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="time" class="form-control" id="appointmentTime" value="10:30">
+                                            
+                                            <!-- Smart Time Suggestion -->
+                                            <div class="alert alert-info d-flex align-items-center py-2 px-3 mt-2 mb-0">
+                                                <i class="ti ti-info-circle me-2"></i>
+                                                <small>AI suggests 10:30 AM for optimal scheduling</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Conflict Detection -->
+                                <div class="conflict-detection mb-3">
+                                    <div class="alert alert-warning d-flex align-items-start py-3 conflict-alert">
+                                        <i class="ti ti-alert-triangle text-warning me-2 mt-1"></i>
+                                        <div class="flex-grow-1">
+                                            <strong>Scheduling Conflict Detected</strong>
+                                            <p class="mb-2 mt-1">Dr. Johnson has another appointment at 10:00 AM</p>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-warning btn-sm">
+                                                    <i class="ti ti-wand me-1"></i>Auto-resolve
+                                                </button>
+                                                <button type="button" class="btn btn-outline-warning btn-sm">
+                                                    Show alternatives
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Appointment Reason -->
+                                <div class="mb-3">
+                                    <label class="form-label mb-1 fw-medium">
+                                        Appointment Reason <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" rows="3" placeholder="Describe the reason for this appointment...">Follow-up for cardiac monitoring and medication adjustment</textarea>
+                                </div>
+                                
+                                <!-- Form Actions -->
+                                <div class="d-flex align-items-center justify-content-end gap-2">
+                                    <button type="button" class="btn btn-light">Cancel</button>
+                                    <button type="button" class="btn btn-primary">
+                                        <i class="ti ti-calendar-plus me-1"></i>Create Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Smart Suggestions Panel (Right Column) -->
+                    <div class="col-lg-5">
+                        <div class="card border-primary shadow-sm">
+                            <div class="card-header bg-primary-transparent">
+                                <div class="d-flex align-items-center">
+                                    <i class="ti ti-brain text-primary fs-20 me-2"></i>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold text-primary">Smart Suggestions</h6>
+                                        <small class="text-muted">Live AI recommendations</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body p-0">
+                                <!-- Live Update Status -->
+                                <div class="suggestion-status bg-light p-3 border-bottom">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <span class="fs-13">Analyzing optimal time slots...</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Ranked Suggestions List -->
+                                <div class="suggestions-list">
+                                    <!-- Suggestion 1 - Optimal -->
+                                    <div class="suggestion-item border-bottom p-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-success rounded-circle fw-bold">1</span>
+                                                <div>
+                                                    <div class="fw-semibold">Today, 10:30 AM</div>
+                                                    <small class="text-muted">30 min duration</small>
+                                                </div>
+                                            </div>
+                                            <div class="confidence-badge">
+                                                <span class="badge bg-success-transparent text-success fs-10">
+                                                    96% optimal
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="suggestion-rationale mb-3">
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-check-circle text-success fs-12 me-2"></i>
+                                                <span class="fs-12">Perfect patient preference match</span>
+                                            </div>
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-check-circle text-success fs-12 me-2"></i>
+                                                <span class="fs-12">Low clinic load (42%)</span>
+                                            </div>
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-check-circle text-success fs-12 me-2"></i>
+                                                <span class="fs-12">Room 203 available</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="button" class="btn one-tap-fill btn-sm w-100">
+                                            <i class="ti ti-mouse me-1"></i>
+                                            One-tap Fill
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Suggestion 2 - Good -->
+                                    <div class="suggestion-item border-bottom p-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-warning rounded-circle fw-bold">2</span>
+                                                <div>
+                                                    <div class="fw-semibold">Tomorrow, 9:15 AM</div>
+                                                    <small class="text-muted">30 min duration</small>
+                                                </div>
+                                            </div>
+                                            <div class="confidence-badge">
+                                                <span class="badge bg-warning-transparent text-warning fs-10">
+                                                    89% optimal
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="suggestion-rationale mb-3">
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-check-circle text-success fs-12 me-2"></i>
+                                                <span class="fs-12">Good timing for patient</span>
+                                            </div>
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-alert-circle text-warning fs-12 me-2"></i>
+                                                <span class="fs-12">Moderate load (65%)</span>
+                                            </div>
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-check-circle text-success fs-12 me-2"></i>
+                                                <span class="fs-12">Preferred room available</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-warning btn-sm w-100">
+                                            <i class="ti ti-mouse me-1"></i>
+                                            One-tap Fill
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Suggestion 3 - Alternative -->
+                                    <div class="suggestion-item border-bottom p-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-info rounded-circle fw-bold">3</span>
+                                                <div>
+                                                    <div class="fw-semibold">Thursday, 2:00 PM</div>
+                                                    <small class="text-muted">30 min duration</small>
+                                                </div>
+                                            </div>
+                                            <div class="confidence-badge">
+                                                <span class="badge bg-info-transparent text-info fs-10">
+                                                    78% optimal
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="suggestion-rationale mb-3">
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-check-circle text-success fs-12 me-2"></i>
+                                                <span class="fs-12">Low load (35%)</span>
+                                            </div>
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-alert-circle text-warning fs-12 me-2"></i>
+                                                <span class="fs-12">Alternative time slot</span>
+                                            </div>
+                                            <div class="reason-item d-flex align-items-center">
+                                                <i class="ti ti-check-circle text-success fs-12 me-2"></i>
+                                                <span class="fs-12">Room available</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-info btn-sm w-100">
+                                            <i class="ti ti-mouse me-1"></i>
+                                            One-tap Fill
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Show More Suggestions -->
+                                    <div class="show-more-suggestions p-3">
+                                        <button type="button" class="btn btn-outline-primary btn-sm w-100">
+                                            <i class="ti ti-chevron-down me-1"></i>
+                                            Show 2 more suggestions
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Smart Actions -->
+                                <div class="smart-actions border-top p-3">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline-info btn-sm w-100">
+                                                <i class="ti ti-refresh me-1"></i>
+                                                Refresh
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm w-100">
+                                                <i class="ti ti-adjustments me-1"></i>
+                                                Adjust
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Smart Insights Card -->
+                        <div class="card mt-3 border-info shadow-sm">
+                            <div class="card-header bg-info-transparent">
+                                <h6 class="mb-0 fw-bold text-info">
+                                    <i class="ti ti-chart-line me-2"></i>
+                                    Smart Insights
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="insight-metrics">
+                                    <div class="metric-row d-flex justify-content-between py-2">
+                                        <span class="fs-13">Current week load:</span>
+                                        <span class="fw-semibold text-warning">72%</span>
+                                    </div>
+                                    <div class="metric-row d-flex justify-content-between py-2">
+                                        <span class="fs-13">Patient no-show risk:</span>
+                                        <span class="fw-semibold text-success">Low (8%)</span>
+                                    </div>
+                                    <div class="metric-row d-flex justify-content-between py-2">
+                                        <span class="fs-13">Optimal booking window:</span>
+                                        <span class="fw-semibold text-info">3-5 days ahead</span>
+                                    </div>
+                                    <div class="metric-row d-flex justify-content-between py-2">
+                                        <span class="fs-13">Patient preference:</span>
+                                        <span class="fw-semibold text-primary">Morning slots</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Learning Card -->
+                        <div class="card mt-3 border-secondary shadow-sm">
+                            <div class="card-header bg-secondary-transparent">
+                                <h6 class="mb-0 fw-bold text-secondary">
+                                    <i class="ti ti-bulb me-2"></i>
+                                    AI Learning
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-start gap-3">
+                                    <i class="ti ti-info-circle text-info fs-16 mt-1"></i>
+                                    <div>
+                                        <small class="text-muted">
+                                            The AI noticed this patient typically arrives 5-10 minutes early and prefers shorter wait times. 
+                                            Morning appointments show 95% attendance rate.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // One-tap fill functionality
+        document.querySelectorAll('.one-tap-fill, .btn-warning, .btn-info').forEach(button => {
+            if (button.textContent.includes('One-tap Fill')) {
+                button.addEventListener('click', function() {
+                    const suggestionItem = this.closest('.suggestion-item');
+                    const timeText = suggestionItem.querySelector('.fw-semibold').textContent;
+                    
+                    // Extract time from suggestion
+                    const timeMatch = timeText.match(/(\d{1,2}:\d{2})/);
+                    const dateMatch = timeText.match(/(Today|Tomorrow|Thursday)/);
+                    
+                    if (timeMatch) {
+                        document.getElementById('appointmentTime').value = timeMatch[1];
+                    }
+                    
+                    // Update date based on suggestion
+                    if (dateMatch) {
+                        const today = new Date();
+                        let targetDate;
+                        
+                        switch(dateMatch[1]) {
+                            case 'Today':
+                                targetDate = today;
+                                break;
+                            case 'Tomorrow':
+                                targetDate = new Date(today);
+                                targetDate.setDate(today.getDate() + 1);
+                                break;
+                            case 'Thursday':
+                                targetDate = new Date(today);
+                                // Find next Thursday
+                                const daysUntilThursday = (4 - today.getDay() + 7) % 7 || 7;
+                                targetDate.setDate(today.getDate() + daysUntilThursday);
+                                break;
+                        }
+                        
+                        if (targetDate) {
+                            const dateString = targetDate.toISOString().split('T')[0];
+                            document.getElementById('appointmentDate').value = dateString;
+                        }
+                    }
+                    
+                    // Visual feedback
+                    this.innerHTML = '<i class="ti ti-check me-1"></i>Applied!';
+                    this.classList.remove('one-tap-fill');
+                    this.classList.add('btn-success');
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="ti ti-mouse me-1"></i>One-tap Fill';
+                        this.classList.remove('btn-success');
+                        this.classList.add('one-tap-fill');
+                    }, 2000);
+                });
+            }
+        });
+        
+        // Smart mode toggle
+        document.getElementById('smartMode').addEventListener('change', function() {
+            const isEnabled = this.checked;
+            const suggestions = document.querySelector('.card.border-primary');
+            const smartHighlights = document.querySelectorAll('.smart-suggestion-highlight');
+            const conflictAlert = document.querySelector('.conflict-alert');
+            
+            if (isEnabled) {
+                suggestions.style.opacity = '1';
+                smartHighlights.forEach(highlight => highlight.style.display = 'block');
+                conflictAlert.style.display = 'block';
+            } else {
+                suggestions.style.opacity = '0.5';
+                smartHighlights.forEach(highlight => highlight.style.display = 'none');
+                conflictAlert.style.display = 'none';
+            }
+        });
+        
+        // Auto-resolve conflict
+        document.querySelector('button[type="button"].btn-warning').addEventListener('click', function() {
+            const conflictAlert = document.querySelector('.conflict-detection');
+            conflictAlert.innerHTML = `
+                <div class="alert alert-success d-flex align-items-center py-2 px-3">
+                    <i class="ti ti-check-circle text-success me-2"></i>
+                    <small>Conflict resolved - appointment moved to 10:30 AM</small>
+                </div>
+            `;
+            
+            // Update time field
+            document.getElementById('appointmentTime').value = '10:30';
+        });
+        
+        // Form field change triggers
+        ['patientSelect', 'departmentSelect', 'doctorSelect', 'appointmentDate', 'appointmentTime'].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('change', function() {
+                    // Simulate AI reanalysis
+                    const liveIndicator = document.querySelector('.live-update-indicator span');
+                    const originalText = liveIndicator.textContent;
+                    liveIndicator.textContent = 'Updating suggestions...';
+                    
+                    setTimeout(() => {
+                        liveIndicator.textContent = originalText;
+                    }, 1500);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
