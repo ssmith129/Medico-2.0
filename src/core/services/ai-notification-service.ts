@@ -63,6 +63,16 @@ export interface ProcessedNotification extends NotificationData {
 
 interface AIEnhancedNotification extends ProcessedNotification {}
 
+export interface AISettings {
+  maxNotifications: number;
+  enableGrouping: boolean;
+  enableSmartPrioritization: boolean;
+  confidenceThreshold: number;
+  autoProcessing: boolean;
+  refreshInterval: number;
+  enableAnalytics: boolean;
+}
+
 interface UserBehaviorData {
   averageResponseTime: { [key: string]: number };
   preferredCategories: string[];
