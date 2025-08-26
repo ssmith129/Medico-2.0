@@ -1,0 +1,645 @@
+@use "../variables" as *;
+@use "../utils/mixins" as *;
+
+.ai-notification-settings {
+  .page-header {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+  }
+
+  // AI Settings Tabs
+  .ai-settings-tabs {
+    .ant-tabs-nav {
+      margin-bottom: 24px;
+      background: var(--white);
+      padding: 0 24px;
+      border-radius: 12px;
+      box-shadow: var(--box-shadow-sm);
+
+      &::before {
+        display: none;
+      }
+
+      .ant-tabs-tab {
+        padding: 16px 20px;
+        margin: 0 8px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: var(--light);
+        }
+
+        &.ant-tabs-tab-active {
+          background: var(--primary-transparent);
+          
+          .ant-tabs-tab-btn {
+            color: var(--primary);
+            font-weight: $font-weight-semibold;
+          }
+        }
+
+        .ant-tabs-tab-btn {
+          font-weight: $font-weight-medium;
+          transition: all 0.2s ease;
+
+          i {
+            font-size: 16px;
+            margin-right: 8px;
+          }
+        }
+      }
+
+      .ant-tabs-ink-bar {
+        background: var(--primary);
+        height: 3px;
+        border-radius: 2px;
+      }
+    }
+
+    .ant-tabs-content-holder {
+      .ant-tabs-content {
+        .ant-tabs-tabpane {
+          animation: fadeInUp 0.3s ease-in-out;
+        }
+      }
+    }
+  }
+
+  // Card Styles
+  .ant-card {
+    border-radius: 12px;
+    box-shadow: var(--box-shadow-sm);
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: var(--box-shadow);
+    }
+
+    .ant-card-head {
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 24px 16px;
+
+      .ant-card-head-title {
+        font-weight: $font-weight-semibold;
+        color: var(--heading-color);
+
+        i {
+          margin-right: 8px;
+          font-size: 18px;
+        }
+      }
+    }
+
+    .ant-card-body {
+      padding: 24px;
+    }
+  }
+
+  // Setting Items
+  .setting-item {
+    .form-label {
+      color: var(--heading-color);
+      margin-bottom: 8px;
+
+      &.fw-semibold {
+        font-size: 14px;
+      }
+    }
+
+    .ant-switch {
+      &.ant-switch-checked {
+        background-color: var(--primary);
+      }
+    }
+
+    .ant-slider {
+      .ant-slider-rail {
+        background-color: var(--light);
+      }
+
+      .ant-slider-track {
+        background-color: var(--primary);
+      }
+
+      .ant-slider-handle {
+        border-color: var(--primary);
+
+        &::after {
+          box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+        }
+      }
+
+      .ant-slider-mark-text {
+        font-size: 11px;
+        color: var(--gray-500);
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+
+  // Category Weight Items
+  .category-weight-item {
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--primary);
+      box-shadow: var(--box-shadow-sm);
+    }
+
+    i {
+      font-size: 16px;
+    }
+  }
+
+  // Automation Items
+  .automation-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  .auto-actions-list {
+    .action-item {
+      border: 1px solid var(--border-color) !important;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--primary) !important;
+        transform: translateY(-2px);
+        box-shadow: var(--box-shadow-sm);
+      }
+
+      .ant-checkbox {
+        .ant-checkbox-input {
+          &:focus + .ant-checkbox-inner {
+            border-color: var(--primary);
+          }
+        }
+
+        .ant-checkbox-inner {
+          &::after {
+            border-color: var(--primary);
+          }
+        }
+
+        &.ant-checkbox-checked {
+          .ant-checkbox-inner {
+            background-color: var(--primary);
+            border-color: var(--primary);
+          }
+        }
+      }
+    }
+  }
+
+  // Notification Methods
+  .notification-method {
+    border: 1px solid var(--border-color) !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: var(--primary) !important;
+      transform: translateY(-2px);
+      box-shadow: var(--box-shadow-sm);
+    }
+
+    i {
+      transition: all 0.2s ease;
+    }
+
+    .ant-switch {
+      &.ant-switch-checked {
+        background-color: var(--primary);
+
+        + i {
+          color: var(--primary);
+        }
+      }
+    }
+  }
+
+  // Learning Items
+  .learning-item {
+    border: 1px solid var(--border-color) !important;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      border-color: var(--primary) !important;
+      transform: translateY(-3px);
+      box-shadow: var(--box-shadow);
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--warning), var(--primary), var(--success));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover::before {
+      opacity: 1;
+    }
+
+    i {
+      transition: all 0.2s ease;
+    }
+
+    .ant-switch {
+      &.ant-switch-checked {
+        background-color: var(--primary);
+      }
+    }
+  }
+
+  // Quiet Hours Settings
+  .form-control {
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.125rem rgba(var(--primary-rgb), 0.25);
+    }
+
+    &:disabled {
+      background-color: var(--light);
+      opacity: 0.6;
+    }
+  }
+
+  .form-check {
+    .form-check-input {
+      &:checked {
+        background-color: var(--primary);
+        border-color: var(--primary);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.125rem rgba(var(--primary-rgb), 0.25);
+      }
+    }
+  }
+
+  // Select Components
+  .ant-select {
+    .ant-select-selector {
+      border-radius: 6px;
+      border-color: var(--border-color);
+
+      &:hover {
+        border-color: var(--primary);
+      }
+    }
+
+    &.ant-select-focused {
+      .ant-select-selector {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
+      }
+    }
+
+    .ant-select-selection-item {
+      background: var(--primary-transparent);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: 4px;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  // Alert Styles
+  .ant-alert {
+    border-radius: 8px;
+    border: 1px solid;
+
+    &.ant-alert-info {
+      background: var(--info-transparent);
+      border-color: var(--info);
+      color: var(--info);
+
+      .ant-alert-icon {
+        color: var(--info);
+      }
+    }
+
+    &.ant-alert-warning {
+      background: var(--warning-transparent);
+      border-color: var(--warning);
+      color: var(--warning);
+
+      .ant-alert-icon {
+        color: var(--warning);
+      }
+    }
+  }
+
+  // Button Styles
+  .ant-btn {
+    border-radius: 6px;
+    font-weight: $font-weight-medium;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--box-shadow-sm);
+    }
+
+    &.ant-btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+
+      &:hover {
+        background: var(--primary-hover);
+        border-color: var(--primary-hover);
+      }
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+// Responsive Design
+@include respond-below(lg) {
+  .ai-notification-settings {
+    .ai-settings-tabs {
+      .ant-tabs-nav {
+        padding: 0 16px;
+
+        .ant-tabs-tab {
+          padding: 12px 16px;
+          margin: 0 4px;
+
+          .ant-tabs-tab-btn {
+            font-size: 13px;
+
+            i {
+              font-size: 14px;
+              margin-right: 6px;
+            }
+          }
+        }
+      }
+    }
+
+    .ant-card {
+      .ant-card-body {
+        padding: 16px;
+      }
+    }
+
+    .category-weight-item {
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .notification-method,
+    .learning-item {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+@include respond-below(md) {
+  .ai-notification-settings {
+    .page-header {
+      .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 16px;
+      }
+    }
+
+    .ai-settings-tabs {
+      .ant-tabs-nav {
+        .ant-tabs-tab {
+          padding: 10px 12px;
+          font-size: 12px;
+
+          .ant-tabs-tab-btn {
+            i {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+
+    .auto-actions-list {
+      .row {
+        .col-md-6 {
+          margin-bottom: 12px;
+        }
+      }
+    }
+
+    .notification-method,
+    .learning-item {
+      .col-md-3,
+      .col-md-4 {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}
+
+@include respond-below(sm) {
+  .ai-notification-settings {
+    .ai-settings-tabs {
+      .ant-tabs-nav {
+        .ant-tabs-tab {
+          padding: 8px 10px;
+          margin: 0 2px;
+          font-size: 11px;
+        }
+      }
+    }
+
+    .category-weight-item {
+      text-align: center;
+    }
+
+    .setting-item {
+      .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 12px;
+      }
+    }
+  }
+}
+
+// Dark Theme Support
+:root[data-bs-theme=dark] {
+  .ai-notification-settings {
+    .ai-settings-tabs {
+      .ant-tabs-nav {
+        background: var(--dark);
+        border: 1px solid var(--border-color);
+
+        .ant-tabs-tab {
+          &:hover {
+            background: var(--gray-800);
+          }
+
+          &.ant-tabs-tab-active {
+            background: rgba(var(--primary-rgb), 0.1);
+          }
+        }
+      }
+    }
+
+    .ant-card {
+      background: var(--dark);
+      border-color: var(--border-color);
+
+      .ant-card-head {
+        background: var(--dark);
+        border-bottom-color: var(--border-color);
+      }
+    }
+
+    .category-weight-item,
+    .action-item,
+    .notification-method,
+    .learning-item {
+      background: var(--gray-800) !important;
+      border-color: var(--border-color) !important;
+
+      &:hover {
+        background: var(--gray-700) !important;
+      }
+    }
+
+    .form-control {
+      background: var(--gray-800);
+      border-color: var(--border-color);
+      color: var(--light);
+
+      &:focus {
+        background: var(--gray-800);
+        color: var(--light);
+      }
+    }
+
+    .ant-select {
+      .ant-select-selector {
+        background: var(--gray-800);
+        border-color: var(--border-color);
+        color: var(--light);
+      }
+
+      .ant-select-selection-item {
+        background: rgba(var(--primary-rgb), 0.2);
+        color: var(--primary);
+      }
+    }
+
+    .ant-alert {
+      &.ant-alert-info {
+        background: rgba(var(--info-rgb), 0.1);
+        color: var(--info);
+      }
+
+      &.ant-alert-warning {
+        background: rgba(var(--warning-rgb), 0.1);
+        color: var(--warning);
+      }
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .ai-notification-settings {
+    .page-header {
+      .d-flex {
+        .d-flex:last-child {
+          display: none !important;
+        }
+      }
+    }
+
+    .ant-tabs-nav {
+      display: none !important;
+    }
+
+    .ant-tabs-content {
+      .ant-tabs-tabpane {
+        display: block !important;
+      }
+    }
+
+    .ant-switch,
+    .ant-btn,
+    .ant-checkbox {
+      display: none !important;
+    }
+
+    .learning-item,
+    .notification-method,
+    .category-weight-item {
+      &::before {
+        display: none;
+      }
+    }
+  }
+}
+
+// High Contrast Mode
+@media (prefers-contrast: high) {
+  .ai-notification-settings {
+    .category-weight-item,
+    .action-item,
+    .notification-method,
+    .learning-item {
+      border-width: 2px !important;
+    }
+
+    .ant-tabs-tab {
+      &.ant-tabs-tab-active {
+        outline: 2px solid var(--primary);
+      }
+    }
+  }
+}
