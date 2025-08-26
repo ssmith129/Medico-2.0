@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Badge, Tooltip, Progress, Modal, Rate } from 'antd';
-import type { AIEnhancedNotification } from '../../../../../../core/services/ai-notification-service';
+import { Badge, Tooltip, Modal } from 'antd';
+import type { ProcessedNotification } from '../../../../../../core/services/ai-notification-service';
 
 interface FlagConfig {
   id: string;
@@ -315,7 +315,7 @@ const AIVisualFlags: React.FC<VisualFlagsProps> = ({
     <div className={`ai-visual-flags ${getSizeClass()} ${compact ? 'flags-compact' : ''}`}>
       {/* Flag Icons */}
       <div className="flag-icons d-flex align-items-center gap-1">
-        {activeFlags.map((flag, index) => {
+        {activeFlags.map((flag, _index) => {
           const flagElement = (
             <div
               key={flag.id}
