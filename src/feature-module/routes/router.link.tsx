@@ -449,7 +449,7 @@ export const publicRoutes = [
   },
   {
     path: routes.email,
-    element: <Email />,
+    element: <UnifiedEmail />,
     route: Route,
   },
   {
