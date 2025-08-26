@@ -362,7 +362,7 @@ const AINotificationDemo: React.FC = () => {
               </thead>
               <tbody>
                 {comparisonData.map((row, index) => (
-                  <tr key={index}>
+                  <tr key={`comparison-${row.feature.toLowerCase().replace(/\s+/g, '-')}-${index}`}>
                     <td className="fw-semibold">{row.feature}</td>
                     <td>{row.traditional}</td>
                     <td className="text-success">{row.aiEnhanced}</td>

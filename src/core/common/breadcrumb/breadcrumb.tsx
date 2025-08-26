@@ -6,7 +6,7 @@ const Breadcrumb = ({ items }: any) => {
       <ol className="breadcrumb mb-0">
         {items.map((item: any, index: number) => (
           <li
-            key={index}
+            key={`breadcrumb-${item.label || item.text || item.name || index}`}
             className={`breadcrumb-item ${item.active ? 'active' : ''}`}
             aria-current={item.active ? 'page' : undefined}
           >

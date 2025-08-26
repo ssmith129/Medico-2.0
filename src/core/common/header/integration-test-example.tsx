@@ -128,7 +128,7 @@ const IntegrationTestExample: React.FC = () => {
                   <Space direction="vertical" size="small">
                     {userProfiles.map((user, index) => (
                       <Button
-                        key={index}
+                        key={`user-profile-${user.name.toLowerCase().replace(/\s+/g, '-')}-${index}`}
                         type={currentUser.name === user.name ? 'primary' : 'default'}
                         size="small"
                         onClick={() => setCurrentUser(user)}
@@ -183,7 +183,7 @@ const IntegrationTestExample: React.FC = () => {
         <Card title="Test Scenarios">
           <div className="row">
             {testScenarios.map((scenario, index) => (
-              <div key={index} className="col-md-6 mb-4">
+              <div key={`test-scenario-${scenario.title.toLowerCase().replace(/\s+/g, '-')}-${index}`} className="col-md-6 mb-4">
                 <Card size="small" title={scenario.title}>
                   <Paragraph className="mb-2">
                     <Text type="secondary">{scenario.description}</Text>
