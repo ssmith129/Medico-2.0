@@ -49,7 +49,7 @@ export interface ProcessedNotification extends NotificationData {
   confidence: number; // AI confidence score 0-1
 }
 
-interface AIEnhancedNotification extends ProcessedNotification {}
+export interface AIEnhancedNotification extends ProcessedNotification {}
 
 export interface AISettings {
   maxNotifications: number;
