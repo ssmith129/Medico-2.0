@@ -192,7 +192,6 @@ const EnhancedNotificationDropdown: React.FC<EnhancedNotificationDropdownProps> 
     dismissNotification,
     recordUserAction,
     refreshNotifications,
-    getHighPriorityNotifications,
     getNotificationsByType
   } = useAINotifications({
     settings: {
