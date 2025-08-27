@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Inbox Triage - Intelligent Message Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E37A4;
+            --secondary: #00D3C7;
+            --success: #27AE60;
+            --info: #2F80ED;
+            --warning: #E2B93B;
+            --danger: #EF1E1E;
+            --light: #F5F6F8;
+            --dark: #0B0D0E;
+            --primary-transparent: #ECEDF7;
+            --success-transparent: #F4FBF7;
+            --warning-transparent: #FEFBF5;
+            --danger-transparent: #FEF4F4;
+            --info-transparent: #F4F9FE;
+            --border-color: #E7E8EB;
+            --gray-500: #6C7688;
+            --gray-100: #F8F9FA;
+            --gray-200: #E9ECEF;
+            --gray-300: #DEE2E6;
+            --gray-400: #CED4DA;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: #0A1B39;
+        }
+
+        .page-wrapper {
+            padding: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #3C449C;
+            border-color: #3C449C;
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .text-primary { color: var(--primary) !important; }
+        .text-success { color: var(--success) !important; }
+        .text-warning { color: var(--warning) !important; }
+        .text-info { color: var(--info) !important; }
+        .text-danger { color: var(--danger) !important; }
+
+        .badge-soft-primary {
+            background-color: var(--primary-transparent);
+            color: var(--primary);
+        }
+
+        .badge-soft-success {
+            background-color: var(--success-transparent);
+            color: var(--success);
+        }
+
+        .badge-soft-info {
+            background-color: var(--info-transparent);
+            color: var(--info);
+        }
+
+        .badge-soft-warning {
+            background-color: var(--warning-transparent);
+            color: var(--warning);
+        }
+
+        .badge-soft-danger {
+            background-color: var(--danger-transparent);
+            color: var(--danger);
+        }
+
+        .bg-primary-transparent { background-color: var(--primary-transparent) !important; }
+        .bg-info-transparent { background-color: var(--info-transparent) !important; }
+        .border-primary { border-color: var(--primary) !important; }
+        .border-info { border-color: var(--info) !important; }
+
+        .triage-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .inbox-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .inbox-item:hover {
+            background-color: rgba(46, 55, 164, 0.05);
+        }
+
+        .inbox-item.critical {
+            border-left: 4px solid var(--danger);
+            background-color: var(--danger-transparent);
+        }
+
+        .inbox-item.urgent {
+            border-left: 4px solid var(--warning);
+            background-color: var(--warning-transparent);
+        }
+
+        .inbox-item.routine {
+            border-left: 4px solid var(--info);
+            background-color: var(--info-transparent);
+        }
+
+        .inbox-item.low-priority {
+            border-left: 4px solid var(--gray-400);
+            background-color: var(--gray-100);
+        }
+
+        .inbox-item.unread {
+            background-color: var(--gray-100);
+            border-left: 3px solid var(--primary);
+        }
+
+        .inbox-item.selected {
+            background-color: var(--primary-transparent);
+            border-left: 4px solid var(--primary);
+        }
+
+        .inbox-item.triaged {
+            opacity: 0.7;
+            background-color: var(--success-transparent);
+        }
+
+        .ai-triage-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .ai-insight-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .confidence-meter {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 1rem 0.75rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .metric-value {
+            font-weight: 700;
+            font-size: 1.5rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            line-height: 1;
+        }
+
+        .metric-change {
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
+        }
+
+        .triage-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .triage-category:hover {
+            border-color: var(--primary);
+            background-color: var(--primary-transparent);
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .triage-category.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .triage-suggestion {
+            padding: 1rem;
+            background: var(--info-transparent);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--info);
+            margin-bottom: 1rem;
+        }
+
+        .auto-response-preview {
+            background: var(--success-transparent);
+            border: 1px solid var(--success);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .processing-animation {
+            animation: processing 2s infinite;
+        }
+
+        @keyframes processing {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .triage-queue {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            background: white;
+        }
+
+        .queue-header {
+            background: var(--gray-100);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: between;
+        }
+
+        .priority-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .priority-critical {
+            background-color: var(--danger);
+        }
+
+        .priority-urgent {
+            background-color: var(--warning);
+        }
+
+        .priority-routine {
+            background-color: var(--info);
+        }
+
+        .priority-low {
+            background-color: var(--gray-400);
+        }
+
+        .ai-actions {
+            background: var(--light);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .smart-routing-panel {
+            background: linear-gradient(135deg, var(--primary-transparent) 0%, var(--info-transparent) 100%);
+            border: 1px solid var(--primary);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .triage-panel {
+                position: static;
+                top: auto;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h4 class="fw-bold mb-1 d-flex align-items-center">
+                        <a href="#" class="text-dark text-decoration-none me-3">
+                            <svg class="ai-insight-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                        </a>
+                        AI Inbox Triage
+                        <svg class="ai-insight-icon ms-2 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                        </svg>
+                    </h4>
+                    <p class="text-muted mb-0">Intelligent message routing and automated triage for healthcare communications</p>
+                </div>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="autoTriageMode" checked>
+                        <label class="form-check-label fw-medium text-primary" for="autoTriageMode">
+                            <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                            </svg>
+                            Auto-Triage
+                        </label>
+                    </div>
+                    <button class="btn btn-primary">
+                        <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Configure Rules
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Inbox Column -->
+            <div class="col-lg-8">
+                <!-- Triage Categories -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold mb-0">Triage Categories</h6>
+                            <span class="text-muted fs-14">
+                                <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
+                                </svg>
+                                Last updated: 2 min ago
+                            </span>
+                        </div>
+                        
+                        <div class="triage-categories">
+                            <a href="#" class="triage-category active" onclick="filterByCategory(this, 'critical')">
+                                <span class="priority-indicator priority-critical"></span>
+                                Critical (4)
+                                <span class="badge badge-soft-danger ms-2 fs-10">New</span>
+                            </a>
+                            <a href="#" class="triage-category" onclick="filterByCategory(this, 'urgent')">
+                                <span class="priority-indicator priority-urgent"></span>
+                                Urgent (12)
+                                <span class="badge badge-soft-warning ms-2 fs-10">AI Processing</span>
+                            </a>
+                            <a href="#" class="triage-category" onclick="filterByCategory(this, 'routine')">
+                                <span class="priority-indicator priority-routine"></span>
+                                Routine (28)
+                            </a>
+                            <a href="#" class="triage-category" onclick="filterByCategory(this, 'low')">
+                                <span class="priority-indicator priority-low"></span>
+                                Low Priority (15)
+                            </a>
+                            <a href="#" class="triage-category" onclick="filterByCategory(this, 'auto-responded')">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                                Auto-Responded (7)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Smart Routing Alert -->
+                <div class="smart-routing-panel">
+                    <div class="d-flex align-items-start">
+                        <svg class="text-primary me-2 mt-1" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                        </svg>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1 fw-bold text-primary">AI Smart Routing Active</h6>
+                            <p class="mb-2 fs-14">2 critical messages automatically routed to Dr. Thompson. 5 routine appointments scheduled via AI assistant.</p>
+                            <div class="d-flex gap-2">
+                                <span class="badge badge-soft-success fs-10">4 Auto-Resolved</span>
+                                <span class="badge badge-soft-info fs-10">2 Escalated</span>
+                                <span class="badge badge-soft-warning fs-10">1 Needs Review</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Critical Messages Queue -->
+                <div class="triage-queue">
+                    <div class="queue-header">
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <h6 class="mb-0 fw-bold text-danger d-flex align-items-center">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                                </svg>
+                                Critical - Immediate Attention Required
+                            </h6>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge badge-soft-danger">4 items</span>
+                                <button class="btn btn-sm btn-outline-danger">Auto-Route All</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Critical Message 1 -->
+                    <div class="inbox-item critical unread selected" onclick="selectMessage(this)">
+                        <div class="ai-triage-badge badge badge-soft-danger">AI: Critical</div>
+                        <div class="d-flex">
+                            <div class="me-3 position-relative flex-shrink-0">
+                                <img class="rounded-circle" width="48" height="48" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGRUY0RjQiLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjRUYxRTFFIj4KPHA+RU0uPC9wPgo8L3N2Zz4KPC9zdmc+">
+                                <span class="position-absolute bottom-0 end-0 bg-danger rounded-circle p-1"></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">Emergency Department</h6>
+                                    <small class="text-muted">1 min ago</small>
+                                </div>
+                                <p class="mb-2 text-dark">
+                                    <span class="fw-medium text-danger">STAT ALERT:</span> Patient Michael Chen experiencing cardiac arrest - requires immediate surgeon assignment
+                                </p>
+                                
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-soft-danger me-2 fs-10">Emergency</span>
+                                    <span class="badge badge-soft-warning me-2 fs-10">Auto-Routing</span>
+                                    <div class="processing-animation">
+                                        <span class="badge badge-soft-primary fs-10">Processing...</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill bg-danger" style="width: 98%;"></div>
+                                </div>
+                                <small class="text-muted">98% confidence - Emergency protocol activated</small>
+                                
+                                <div class="ai-actions">
+                                    <small class="fw-medium text-muted d-block mb-2">
+                                        <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                        </svg>
+                                        AI Auto-Actions Triggered:
+                                    </small>
+                                    <div class="d-flex gap-2 mb-2">
+                                        <button class="btn btn-danger btn-sm">
+                                            <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                                            </svg>
+                                            Page Dr. Thompson
+                                        </button>
+                                        <button class="btn btn-warning btn-sm">Alert OR Team</button>
+                                        <button class="btn btn-info btn-sm">Update Family</button>
+                                    </div>
+                                    <div class="auto-response-preview">
+                                        <small class="fw-medium text-success d-block mb-1">Auto-Response Sent:</small>
+                                        <p class="fs-12 mb-0 text-muted">"Emergency protocol activated. Dr. Thompson notified. OR Team 2 on standby. ETA: 3 minutes."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Critical Message 2 -->
+                    <div class="inbox-item critical unread" onclick="selectMessage(this)">
+                        <div class="ai-triage-badge badge badge-soft-danger">AI: Critical</div>
+                        <div class="d-flex">
+                            <div class="me-3 position-relative flex-shrink-0">
+                                <img class="rounded-circle" width="48" height="48" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGRUZCRjUiLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjRTJCOTNCIj4KPHA+UEguPC9wPgo8L3N2Zz4KPC9zdmc+">
+                                <span class="position-absolute bottom-0 end-0 bg-warning rounded-circle p-1"></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">Pharmacy Alert System</h6>
+                                    <small class="text-muted">3 min ago</small>
+                                </div>
+                                <p class="mb-2 text-dark">
+                                    <span class="fw-medium text-warning">DRUG INTERACTION:</span> Fatal interaction detected between prescribed medications for Patient ID: 78432
+                                </p>
+                                
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-soft-danger me-2 fs-10">Drug Safety</span>
+                                    <span class="badge badge-soft-warning me-2 fs-10">Auto-Hold</span>
+                                    <span class="badge badge-soft-info me-2 fs-10">Dr. Alert Sent</span>
+                                </div>
+                                
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill bg-warning" style="width: 94%;"></div>
+                                </div>
+                                <small class="text-muted">94% confidence - Medication hold initiated</small>
+                                
+                                <div class="ai-actions">
+                                    <small class="fw-medium text-muted d-block mb-2">
+                                        <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                        </svg>
+                                        AI Auto-Actions Completed:
+                                    </small>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-success btn-sm disabled">
+                                            <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                            </svg>
+                                            Meds On Hold
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm">Review Alternatives</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Show More Critical -->
+                    <div class="text-center p-3 border-top">
+                        <button class="btn btn-outline-danger btn-sm" onclick="showMoreCritical()">
+                            <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                            </svg>
+                            Show 2 More Critical Messages
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Urgent Messages Queue -->
+                <div class="triage-queue">
+                    <div class="queue-header">
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <h6 class="mb-0 fw-bold text-warning d-flex align-items-center">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/>
+                                </svg>
+                                Urgent - Requires Attention Today
+                            </h6>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge badge-soft-warning">12 items</span>
+                                <button class="btn btn-sm btn-outline-warning">Batch Process</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Urgent Message 1 -->
+                    <div class="inbox-item urgent" onclick="selectMessage(this)">
+                        <div class="ai-triage-badge badge badge-soft-warning">AI: Urgent</div>
+                        <div class="d-flex">
+                            <div class="me-3 position-relative flex-shrink-0">
+                                <img class="rounded-circle" width="48" height="48" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGNEZCRjciLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMjdBRTYwIj4KPHA+RFIuPC9wPgo8L3N2Zz4KPC9zdmc+">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">Dr. Sarah Martinez</h6>
+                                    <small class="text-muted">12 min ago</small>
+                                </div>
+                                <p class="mb-2 text-dark">Lab results for patient Emma Wilson show elevated cardiac enzymes - requires cardiologist consultation within 4 hours</p>
+                                
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-soft-warning me-2 fs-10">Lab Alert</span>
+                                    <span class="badge badge-soft-info me-2 fs-10">Auto-Scheduled</span>
+                                </div>
+                                
+                                <div class="confidence-meter">
+                                    <div class="confidence-fill bg-warning" style="width: 87%;"></div>
+                                </div>
+                                <small class="text-muted">87% confidence - Cardiology consultation booked</small>
+                                
+                                <div class="ai-actions">
+                                    <div class="auto-response-preview">
+                                        <small class="fw-medium text-success d-block mb-1">Auto-Response Sent:</small>
+                                        <p class="fs-12 mb-0 text-muted">"Cardiology consultation scheduled with Dr. Kim at 3:30 PM today. Patient and family notified."</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Show More Urgent -->
+                    <div class="text-center p-3 border-top">
+                        <button class="btn btn-outline-warning btn-sm" onclick="showMoreUrgent()">
+                            Show 11 More Urgent Messages
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Routine Messages (Collapsed) -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6 class="mb-0 fw-bold text-info d-flex align-items-center">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                Routine Messages - Auto-Processing Available
+                            </h6>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge badge-soft-info">28 items</span>
+                                <span class="badge badge-soft-success">15 auto-resolved</span>
+                                <button class="btn btn-outline-info btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42z"/>
+                                    </svg>
+                                    Expand
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Triage Analytics Panel -->
+            <div class="col-lg-4">
+                <div class="triage-panel">
+                    <!-- Triage Performance Metrics -->
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0 fw-bold d-flex align-items-center">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                                </svg>
+                                Triage Performance
+                                <div class="spinner-border spinner-border-sm ms-auto d-none" id="triageLoader"></div>
+                            </h6>
+                        </div>
+                        
+                        <div class="card-body p-0">
+                            <div class="row g-0">
+                                <div class="col-6">
+                                    <div class="metric-card border-end">
+                                        <div class="metric-value text-success">94%</div>
+                                        <div class="metric-label">Accuracy Rate</div>
+                                        <div class="metric-change text-success">+2% this week</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-card">
+                                        <div class="metric-value text-info">1.3m</div>
+                                        <div class="metric-label">Avg Response</div>
+                                        <div class="metric-change text-success">-15s improved</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-0">
+                                <div class="col-6">
+                                    <div class="metric-card border-end border-top">
+                                        <div class="metric-value text-warning">67</div>
+                                        <div class="metric-label">Auto-Resolved</div>
+                                        <div class="metric-change text-success">+12 today</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-card border-top">
+                                        <div class="metric-value text-danger">4</div>
+                                        <div class="metric-label">Escalations</div>
+                                        <div class="metric-change text-warning">Same as yesterday</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smart Routing Insights -->
+                    <div class="card border-info mb-3">
+                        <div class="card-header bg-info-transparent">
+                            <h6 class="mb-0 fw-bold text-info">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.5 16.5v-9l8 4.5-8 4.5z"/>
+                                </svg>
+                                Smart Routing Insights
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="insight-item d-flex align-items-start mb-3">
+                                <svg class="text-success me-2 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+                                </svg>
+                                <div>
+                                    <small class="fw-medium">Routing Efficiency</small>
+                                    <p class="fs-12 text-muted mb-0">
+                                        Emergency messages reach specialists 40% faster with AI routing
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="insight-item d-flex align-items-start mb-3">
+                                <svg class="text-info me-2 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z"/>
+                                </svg>
+                                <div>
+                                    <small class="fw-medium">Pattern Recognition</small>
+                                    <p class="fs-12 text-muted mb-0">
+                                        Lab alerts peak at 2 PM - auto-routing activated during this window
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="insight-item d-flex align-items-start">
+                                <svg class="text-warning me-2 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
+                                </svg>
+                                <div>
+                                    <small class="fw-medium">Workload Prediction</small>
+                                    <p class="fs-12 text-muted mb-0">
+                                        25% increase in triage volume expected tomorrow due to clinic hours
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto-Response Templates -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20 6L9 17l-5-5 1.41-1.41L9 14.17 18.59 4.59 20 6z"/>
+                                </svg>
+                                Auto-Response Status
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="fs-14">Appointment Confirmations</span>
+                                <span class="badge badge-soft-success">12 sent</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="fs-14">Lab Result Notifications</span>
+                                <span class="badge badge-soft-info">8 sent</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="fs-14">Prescription Refill Alerts</span>
+                                <span class="badge badge-soft-warning">5 sent</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="fs-14">Emergency Escalations</span>
+                                <span class="badge badge-soft-danger">2 sent</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                                Triage Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                    </svg>
+                                    Process All Routine
+                                </button>
+                                <button class="btn btn-outline-warning btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                                    </svg>
+                                    Review Escalations
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    Export Triage Report
+                                </button>
+                                <button class="btn btn-outline-info btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    Training Mode
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter by triage category
+        function filterByCategory(element, category) {
+            // Remove active class from all categories
+            document.querySelectorAll('.triage-category').forEach(cat => {
+                cat.classList.remove('active');
+            });
+            
+            // Add active class to clicked category
+            element.classList.add('active');
+            
+            // In a real implementation, this would filter the messages
+            console.log('Filtering by category:', category);
+        }
+
+        // Select message
+        function selectMessage(element) {
+            // Remove selected class from all messages
+            document.querySelectorAll('.inbox-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked message
+            element.classList.add('selected');
+            element.classList.remove('unread');
+            
+            // Update triage analytics
+            updateTriageAnalytics();
+        }
+
+        // Show more critical messages
+        function showMoreCritical() {
+            console.log('Loading more critical messages...');
+        }
+
+        // Show more urgent messages
+        function showMoreUrgent() {
+            console.log('Loading more urgent messages...');
+        }
+
+        // Update triage analytics
+        function updateTriageAnalytics() {
+            const loader = document.getElementById('triageLoader');
+            loader.classList.remove('d-none');
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                loader.classList.add('d-none');
+                // Update metrics in real implementation
+            }, 1500);
+        }
+
+        // Initialize AI triage system
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate real-time triage updates
+            setInterval(() => {
+                // Add processing animations
+                const processingBadges = document.querySelectorAll('.processing-animation');
+                processingBadges.forEach(badge => {
+                    badge.style.opacity = Math.random() > 0.5 ? '1' : '0.6';
+                });
+            }, 2000);
+
+            // Simulate auto-triage mode
+            const autoTriageCheckbox = document.getElementById('autoTriageMode');
+            autoTriageCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    console.log('Auto-triage mode enabled');
+                    // Start auto-processing simulation
+                } else {
+                    console.log('Auto-triage mode disabled');
+                    // Stop auto-processing
+                }
+            });
+        });
+    </script>
+</body>
+</html>
