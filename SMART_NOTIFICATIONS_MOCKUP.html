@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Notifications - AI-Enhanced Notification Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2E37A4;
+            --secondary: #00D3C7;
+            --success: #27AE60;
+            --info: #2F80ED;
+            --warning: #E2B93B;
+            --danger: #EF1E1E;
+            --light: #F5F6F8;
+            --dark: #0B0D0E;
+            --primary-transparent: #ECEDF7;
+            --success-transparent: #F4FBF7;
+            --warning-transparent: #FEFBF5;
+            --danger-transparent: #FEF4F4;
+            --info-transparent: #F4F9FE;
+            --border-color: #E7E8EB;
+            --gray-500: #6C7688;
+            --gray-100: #F8F9FA;
+            --gray-200: #E9ECEF;
+            --gray-300: #DEE2E6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: #0A1B39;
+        }
+
+        .page-wrapper {
+            padding: 1.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #3C449C;
+            border-color: #3C449C;
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .text-primary { color: var(--primary) !important; }
+        .text-success { color: var(--success) !important; }
+        .text-warning { color: var(--warning) !important; }
+        .text-info { color: var(--info) !important; }
+        .text-danger { color: var(--danger) !important; }
+
+        .badge-soft-primary {
+            background-color: var(--primary-transparent);
+            color: var(--primary);
+        }
+
+        .badge-soft-success {
+            background-color: var(--success-transparent);
+            color: var(--success);
+        }
+
+        .badge-soft-info {
+            background-color: var(--info-transparent);
+            color: var(--info);
+        }
+
+        .badge-soft-warning {
+            background-color: var(--warning-transparent);
+            color: var(--warning);
+        }
+
+        .badge-soft-danger {
+            background-color: var(--danger-transparent);
+            color: var(--danger);
+        }
+
+        .bg-primary-transparent { background-color: var(--primary-transparent) !important; }
+        .bg-info-transparent { background-color: var(--info-transparent) !important; }
+        .border-primary { border-color: var(--primary) !important; }
+        .border-info { border-color: var(--info) !important; }
+
+        .smart-insights-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .notification-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            background-color: rgba(46, 55, 164, 0.05);
+        }
+
+        .notification-item.high-priority {
+            border-left: 4px solid var(--danger);
+            background-color: var(--danger-transparent);
+        }
+
+        .notification-item.medium-priority {
+            border-left: 4px solid var(--warning);
+            background-color: var(--warning-transparent);
+        }
+
+        .notification-item.low-priority {
+            border-left: 4px solid var(--info);
+            background-color: var(--info-transparent);
+        }
+
+        .notification-item.unread {
+            background-color: var(--gray-100);
+            border-left: 3px solid var(--primary);
+        }
+
+        .notification-item.selected {
+            background-color: var(--primary-transparent);
+            border-left: 4px solid var(--primary);
+        }
+
+        .ai-priority-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .ai-insight-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .confidence-bar {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 0.75rem 0.5rem;
+            background: var(--light);
+            border-radius: 0.375rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-weight: 700;
+            font-size: 1.25rem;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            line-height: 1;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary);
+            background-color: var(--primary-transparent);
+        }
+
+        .filter-chip.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .smart-suggestion {
+            padding: 0.75rem;
+            background: var(--info-transparent);
+            border-radius: 0.375rem;
+            border-left: 3px solid var(--info);
+            margin-bottom: 0.75rem;
+        }
+
+        .notification-timeline::before {
+            content: '';
+            position: absolute;
+            left: 2rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 1.5rem;
+            top: 0.5rem;
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid white;
+            z-index: 1;
+        }
+
+        .loading-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .notification-group {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .group-header {
+            background: var(--gray-100);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 991.98px) {
+            .smart-insights-panel {
+                position: static;
+                top: auto;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <div class="mb-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h4 class="fw-bold mb-1 d-flex align-items-center">
+                        <a href="#" class="text-dark text-decoration-none me-3">
+                            <svg class="ai-insight-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                        </a>
+                        Smart Notifications
+                        <svg class="ai-insight-icon ms-2 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                        </svg>
+                    </h4>
+                    <p class="text-muted mb-0">AI-powered notification management and prioritization</p>
+                </div>
+                
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="aiMode" checked>
+                    <label class="form-check-label fw-medium text-primary" for="aiMode">
+                        <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                        </svg>
+                        AI Insights Enabled
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Notifications Column -->
+            <div class="col-lg-8">
+                <!-- Smart Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold mb-0">Smart Filters</h6>
+                            <button class="btn btn-outline-primary btn-sm" onclick="showAllFilters()">
+                                <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/>
+                                </svg>
+                                Customize
+                            </button>
+                        </div>
+                        
+                        <div class="filter-chips">
+                            <span class="filter-chip active" onclick="filterNotifications('all')">
+                                <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+                                </svg>
+                                AI Recommended (12)
+                            </span>
+                            <span class="filter-chip" onclick="filterNotifications('urgent')">
+                                <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                                </svg>
+                                Urgent (3)
+                            </span>
+                            <span class="filter-chip" onclick="filterNotifications('medical')">
+                                <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"/>
+                                </svg>
+                                Medical Updates (7)
+                            </span>
+                            <span class="filter-chip" onclick="filterNotifications('appointments')">
+                                <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                </svg>
+                                Appointments (5)
+                            </span>
+                            <span class="filter-chip" onclick="filterNotifications('system')">
+                                <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                System (2)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Smart Suggestions Banner -->
+                <div class="smart-suggestion">
+                    <div class="d-flex align-items-start">
+                        <svg class="text-info me-2 mt-1" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z"/>
+                        </svg>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1 fw-bold text-info">AI Recommendation</h6>
+                            <p class="mb-0 fs-14">Focus on the 3 urgent notifications first. Dr. Thompson's surgery update requires immediate attention (95% confidence).</p>
+                        </div>
+                        <button class="btn btn-sm btn-outline-info">Got it</button>
+                    </div>
+                </div>
+
+                <!-- Grouped Notifications -->
+                <div class="notification-group">
+                    <div class="group-header">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6 class="mb-0 fw-bold text-danger">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                                </svg>
+                                Urgent - Immediate Action Required
+                            </h6>
+                            <span class="badge badge-soft-danger">3 items</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Urgent Notification 1 -->
+                    <div class="notification-item high-priority unread selected" onclick="selectNotification(this)">
+                        <div class="ai-priority-badge badge badge-soft-danger">AI: High</div>
+                        <div class="d-flex">
+                            <div class="me-3 position-relative flex-shrink-0">
+                                <img class="rounded-circle" width="48" height="48" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNEQ0ZERjciLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMkU3RDMyIj4KPHA+RFIuPC9wPgo8L3N2Zz4KPC9zdmc+">
+                                <span class="position-absolute bottom-0 end-0 bg-danger rounded-circle p-1"></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">Dr. Sarah Thompson</h6>
+                                    <small class="text-muted">2 min ago</small>
+                                </div>
+                                <p class="mb-2 text-dark">
+                                    <span class="fw-medium text-danger">Emergency:</span> Surgery schedule conflict detected for cardiac procedure at 2:00 PM today
+                                </p>
+                                
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-soft-danger me-2 fs-10">Critical</span>
+                                    <span class="badge badge-soft-warning me-2 fs-10">Schedule Conflict</span>
+                                    <div class="confidence-bar flex-grow-1 ms-2">
+                                        <div class="confidence-fill bg-danger" style="width: 95%;"></div>
+                                    </div>
+                                    <small class="text-muted ms-2">95% confident</small>
+                                </div>
+                                
+                                <div class="ai-suggestions bg-light p-2 rounded">
+                                    <small class="fw-medium text-muted d-block mb-1">
+                                        <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                        </svg>
+                                        AI Suggested Actions:
+                                    </small>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-danger btn-sm">
+                                            <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                            </svg>
+                                            Reschedule Surgery
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                                            </svg>
+                                            Call Dr. Thompson
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Urgent Notification 2 -->
+                    <div class="notification-item high-priority unread" onclick="selectNotification(this)">
+                        <div class="ai-priority-badge badge badge-soft-danger">AI: High</div>
+                        <div class="d-flex">
+                            <div class="me-3 position-relative flex-shrink-0">
+                                <img class="rounded-circle" width="48" height="48" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGNEY5RkUiLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMkY4MEVEIj4KPHA+U1lTPC9wPgo8L3N2Zz4KPC9zdmc+">
+                                <span class="position-absolute bottom-0 end-0 bg-warning rounded-circle p-1"></span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">System Alert</h6>
+                                    <small class="text-muted">5 min ago</small>
+                                </div>
+                                <p class="mb-2 text-dark">
+                                    <span class="fw-medium text-warning">Patient Database:</span> Critical backup failure detected - immediate IT intervention required
+                                </p>
+                                
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-soft-danger me-2 fs-10">System Critical</span>
+                                    <span class="badge badge-soft-warning me-2 fs-10">Data Risk</span>
+                                    <div class="confidence-bar flex-grow-1 ms-2">
+                                        <div class="confidence-fill bg-warning" style="width: 98%;"></div>
+                                    </div>
+                                    <small class="text-muted ms-2">98% confident</small>
+                                </div>
+                                
+                                <div class="ai-suggestions bg-light p-2 rounded">
+                                    <small class="fw-medium text-muted d-block mb-1">
+                                        <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                        </svg>
+                                        AI Suggested Actions:
+                                    </small>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-warning btn-sm">Alert IT Team</button>
+                                        <button class="btn btn-outline-primary btn-sm">View System Status</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Urgent Notification 3 -->
+                    <div class="notification-item high-priority" onclick="selectNotification(this)">
+                        <div class="ai-priority-badge badge badge-soft-warning">AI: Med</div>
+                        <div class="d-flex">
+                            <div class="me-3 position-relative flex-shrink-0">
+                                <img class="rounded-circle" width="48" height="48" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGRUZCRjUiLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjRTJCOTNCIj4KPHA+RU08L3A+Cjwvc3ZnPgo8L3N2Zz4=">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">Emily Rodriguez</h6>
+                                    <small class="text-muted">8 min ago</small>
+                                </div>
+                                <p class="mb-2 text-dark">
+                                    <span class="fw-medium text-warning">Medication Alert:</span> Critical allergy update - new penicillin allergy reported
+                                </p>
+                                
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge badge-soft-warning me-2 fs-10">Med Alert</span>
+                                    <span class="badge badge-soft-info me-2 fs-10">Patient Safety</span>
+                                    <div class="confidence-bar flex-grow-1 ms-2">
+                                        <div class="confidence-fill bg-warning" style="width: 87%;"></div>
+                                    </div>
+                                    <small class="text-muted ms-2">87% confident</small>
+                                </div>
+                                
+                                <div class="ai-suggestions bg-light p-2 rounded">
+                                    <small class="fw-medium text-muted d-block mb-1">
+                                        <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                        </svg>
+                                        AI Suggested Actions:
+                                    </small>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-warning btn-sm">Update Medical Records</button>
+                                        <button class="btn btn-outline-primary btn-sm">Notify Care Team</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medium Priority Group -->
+                <div class="notification-group">
+                    <div class="group-header">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6 class="mb-0 fw-bold text-info">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                Important - Review When Available
+                            </h6>
+                            <span class="badge badge-soft-info">5 items</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Medium Priority Notification 1 -->
+                    <div class="notification-item medium-priority" onclick="selectNotification(this)">
+                        <div class="ai-priority-badge badge badge-soft-info">AI: Med</div>
+                        <div class="d-flex">
+                            <div class="me-3 position-relative flex-shrink-0">
+                                <img class="rounded-circle" width="48" height="48" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNGNEZCRjciLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMjdBRTYwIj4KPHA+RFIuPC9wPgo8L3N2Zz4KPC9zdmc+">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-start justify-content-between mb-1">
+                                    <h6 class="mb-0 fw-bold text-dark">Dr. James Patel</h6>
+                                    <small class="text-muted">15 min ago</small>
+                                </div>
+                                <p class="mb-2 text-dark">Completed follow-up report for patient <span class="fw-medium">Michael Chen</span> - post-surgery recovery progressing well</p>
+                                
+                                <div class="d-flex align-items-center">
+                                    <span class="badge badge-soft-success me-2 fs-10">Follow-up</span>
+                                    <span class="badge badge-soft-info me-2 fs-10">Good News</span>
+                                    <div class="confidence-bar flex-grow-1 ms-2">
+                                        <div class="confidence-fill bg-info" style="width: 78%;"></div>
+                                    </div>
+                                    <small class="text-muted ms-2">78% confident</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Show More Button -->
+                    <div class="text-center p-3 border-top">
+                        <button class="btn btn-outline-primary btn-sm" onclick="showMoreNotifications()">
+                            <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                            </svg>
+                            Show 4 More Medium Priority
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Low Priority (Collapsed) -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h6 class="mb-0 fw-bold text-muted">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/>
+                                </svg>
+                                Low Priority - Background Updates
+                            </h6>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-soft-secondary me-2">8 items</span>
+                                <button class="btn btn-outline-secondary btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M7.41 8.58L12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42z"/>
+                                    </svg>
+                                    Expand
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Insights Panel -->
+            <div class="col-lg-4">
+                <div class="smart-insights-panel">
+                    <!-- AI Analytics Card -->
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0 fw-bold d-flex align-items-center">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                                </svg>
+                                Notification Analytics
+                                <div class="spinner-border spinner-border-sm ms-auto d-none loading-pulse" id="analyticsLoader"></div>
+                            </h6>
+                        </div>
+                        
+                        <div class="card-body p-0">
+                            <div class="row g-0">
+                                <div class="col-6">
+                                    <div class="metric-card border-end">
+                                        <div class="metric-value text-danger">16</div>
+                                        <div class="metric-label">Total Pending</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-card">
+                                        <div class="metric-value text-warning">3</div>
+                                        <div class="metric-label">Urgent</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-0">
+                                <div class="col-6">
+                                    <div class="metric-card border-end border-top">
+                                        <div class="metric-value text-success">89%</div>
+                                        <div class="metric-label">AI Accuracy</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-card border-top">
+                                        <div class="metric-value text-info">4.2m</div>
+                                        <div class="metric-label">Avg Response</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smart Insights Card -->
+                    <div class="card border-info mb-3">
+                        <div class="card-header bg-info-transparent">
+                            <h6 class="mb-0 fw-bold text-info">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z"/>
+                                </svg>
+                                AI Insights & Trends
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="insight-item d-flex align-items-start mb-3">
+                                <svg class="text-success me-2 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/>
+                                </svg>
+                                <div>
+                                    <small class="fw-medium">Response Optimization</small>
+                                    <p class="fs-12 text-muted mb-0">
+                                        Your response time to urgent notifications improved by 35% this week
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="insight-item d-flex align-items-start mb-3">
+                                <svg class="text-warning me-2 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                                </svg>
+                                <div>
+                                    <small class="fw-medium">Pattern Detection</small>
+                                    <p class="fs-12 text-muted mb-0">
+                                        Surgery conflicts typically occur on Tuesdays - consider scheduling adjustment
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="insight-item d-flex align-items-start">
+                                <svg class="text-info me-2 mt-1" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
+                                </svg>
+                                <div>
+                                    <small class="fw-medium">Workload Prediction</small>
+                                    <p class="fs-12 text-muted mb-0">
+                                        Expected 40% increase in notifications tomorrow due to surgery schedule
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0 fw-bold">
+                                <svg class="ai-insight-icon me-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                                Quick Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                    </svg>
+                                    Mark All Read
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                    </svg>
+                                    Advanced Filters
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm">
+                                    <svg class="ai-insight-icon me-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    Export Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Notification filtering
+        function filterNotifications(type) {
+            // Remove active class from all chips
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            
+            // Add active class to clicked chip
+            event.target.closest('.filter-chip').classList.add('active');
+            
+            // In a real implementation, this would filter the notifications
+            console.log('Filtering by:', type);
+        }
+
+        // Notification selection
+        function selectNotification(element) {
+            // Remove selected class from all notifications
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked notification
+            element.classList.add('selected');
+            element.classList.remove('unread');
+            
+            // Update analytics or trigger other actions
+            updateNotificationAnalytics();
+        }
+
+        // Show more notifications
+        function showMoreNotifications() {
+            // In a real implementation, this would load more notifications
+            console.log('Loading more notifications...');
+        }
+
+        // Show all filters
+        function showAllFilters() {
+            // In a real implementation, this would open a filter modal
+            console.log('Opening advanced filters...');
+        }
+
+        // Update notification analytics
+        function updateNotificationAnalytics() {
+            const loader = document.getElementById('analyticsLoader');
+            loader.classList.remove('d-none');
+            
+            // Simulate API call
+            setTimeout(() => {
+                loader.classList.add('d-none');
+                // Update metrics
+            }, 1000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate real-time updates
+            setInterval(() => {
+                // Add subtle animations or updates
+                const badges = document.querySelectorAll('.ai-priority-badge');
+                badges.forEach(badge => {
+                    badge.style.animation = 'pulse 1s ease-in-out';
+                    setTimeout(() => {
+                        badge.style.animation = '';
+                    }, 1000);
+                });
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
