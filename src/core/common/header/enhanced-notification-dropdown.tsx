@@ -444,7 +444,7 @@ const EnhancedNotificationDropdown: React.FC<EnhancedNotificationDropdownProps> 
             ) : (
               displayNotifications.slice(0, 8).map((notification: any, index: number) => (
                 <EnhancedNotificationItem
-                  key={notification.id || index}
+                  key={notification.id || `notification-${index}`}
                   notification={notification}
                   isAIEnabled={isAIEnabled}
                   onMarkRead={handleMarkRead}
