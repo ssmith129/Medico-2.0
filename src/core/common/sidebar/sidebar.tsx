@@ -339,7 +339,7 @@ const Sidebar = () => {
                                   (item: any, j: any) => {
                                     const isSubActive =
                                       item?.submenuItems
-                                        ?.map((link: any) => link?.link)
+                                        ?.map((link: any, linkIndex: number) => link?.link)
                                         .includes(Location.pathname) ||
                                       item?.link === Location.pathname;
 
