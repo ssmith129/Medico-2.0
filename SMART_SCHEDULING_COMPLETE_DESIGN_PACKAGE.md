@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Smart Scheduling feature transforms the existing healthcare appointment management system into an AI-powered intelligent assistant that provides real-time recommendations, conflict detection, and optimal time slot suggestions while maintaining 100% visual consistency with the existing design system.
+The Smart  feature transforms the existing healthcare appointment management system into an AI-powered intelligent assistant that provides real-time recommendations, conflict detection, and optimal time slot suggestions while maintaining 100% visual consistency with the existing design system.
 
 ## 🎯 Primary Objectives
 

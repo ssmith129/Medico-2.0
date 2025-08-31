@@ -6,7 +6,7 @@ import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { Badge, Switch, Tooltip, Card, Statistic, Empty, Spin } from 'antd';
 import type { ProcessedNotification } from '../../../../../../core/services/ai-notification-service';
 import AIVisualFlags from '../notifications/ai-visual-flags';
-import 'overlayscrollbars/overlayscrollbars.css';
+import 'overlayscrollbars/styles/overlayscrollbars.css';
 
 interface ChatMessage {
   id: string;
