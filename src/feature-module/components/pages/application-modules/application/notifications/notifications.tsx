@@ -4,7 +4,7 @@ import { Badge, Switch, Tooltip, Card, Statistic, Empty, Spin, Button, Alert, me
 import ImageWithBasePath from "../../../../../../core/imageWithBasePath";
 import Modals from "./modals/modals";
 import PredefinedDatePicker from "../../../../../../core/common/datePicker";
-import useAINotifications from "../../../../../core/hooks/useAINotifications";
+import useAINotifications from "../../../../../../core/hooks/useAINotifications";
 import type { ProcessedNotification } from "../../../../../../core/services/ai-notification-service";
 import AIVisualFlags from './ai-visual-flags';
 import NotificationDetailView from './notification-detail-view';
