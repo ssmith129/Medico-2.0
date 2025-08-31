@@ -1,3 +1,4 @@
+import '@ant-design/v5-patch-for-react-19'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
@@ -12,7 +13,7 @@ import "../src/style/css/feather.css";
 import "../node_modules/@tabler/icons-webfont/dist/tabler-icons.css";
 import "../node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
-import "../src/index.scss"; 
+import "../src/index.scss";
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>

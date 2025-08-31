@@ -14,7 +14,7 @@ interface UseAINotificationsReturn {
   isLoading: boolean;
   error: string | null;
   settings: AISettings;
-  
+
   // Actions
   processNotification: (notification: NotificationInput) => ProcessedNotification;
   processMultipleNotifications: (notifications: NotificationInput[]) => ProcessedNotification[];
@@ -24,35 +24,20 @@ interface UseAINotificationsReturn {
   updateSettings: (newSettings: Partial<AISettings>) => void;
   recordUserAction: (notificationId: string, action: string) => void;
   refreshNotifications: () => Promise<void>;
-  
+
   // Filtering and sorting
   getNotificationsByType: (type: ProcessedNotification['type']) => ProcessedNotification[];
   getNotificationsByCategory: (category: ProcessedNotification['category']) => ProcessedNotification[];
-  getHighPriorityNotifications: () => ProcessedNotification[];
-  getNotificationsForRole: (role: string) => ProcessedNotification[];
 }
 
 const defaultSettings: AISettings = {
-  enabled: true,
-  priorityWeight: 75,
-  categoryWeights: {
-    emergency: 100,
-    medical: 85,
-    appointment: 60,
-    administrative: 40,
-    reminder: 30
-  },
-  smartGrouping: true,
-  groupSimilarThreshold: 70,
-  roleBasedFiltering: {
-    enabled: true,
-    userRoles: ['doctor'],
-    departmentFilter: []
-  },
-  learningMode: {
-    enabled: true,
-    adaptToBehavior: true
-  }
+  maxNotifications: 50,
+  enableGrouping: true,
+  enableSmartPrioritization: true,
+  confidenceThreshold: 0.7,
+  autoProcessing: true,
+  refreshInterval: 30000,
+  enableAnalytics: true
 };
 
 export const useAINotifications = (options: UseAINotificationsOptions = {}): UseAINotificationsReturn => {
@@ -70,12 +55,13 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
   const [settings, setSettings] = useState<AISettings>({ ...defaultSettings, ...initialSettings });
 
   const aiService = useRef<AINotificationService>();
-  const refreshTimer = useRef<NodeJS.Timeout>();
+  const refreshTimer = useRef<ReturnType<typeof setInterval>>();
   const actionStartTimes = useRef<Map<string, number>>(new Map());
 
   // Initialize AI service
   useEffect(() => {
-    aiService.current = new AINotificationService(settings);
+    aiService.current = new AINotificationService();
+    aiService.current.updateSettings(settings);
   }, []);
 
   // Update AI service when settings change
@@ -95,23 +81,23 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
       {
         id: "1",
         title: "Emergency Patient Alert",
-        description: "Patient John Doe shows critical vitals - immediate attention required",
+        message: "Patient John Doe shows critical vitals - immediate attention required",
         sender: "Emergency System",
-        senderRole: "emergency",
         timestamp: new Date(Date.now() - 5 * 60 * 1000),
+        isRead: false,
+        type: "urgent",
         metadata: {
-          patientId: "P-001",
-          urgencyKeywords: ["critical", "immediate"],
-          medicalTerms: ["vitals", "emergency"]
+          patientId: "P-001"
         }
       },
       {
         id: "2",
         title: "Surgery Schedule Updated",
-        description: "Dr. Smith updated tomorrow's surgery schedule - 3 operations rescheduled",
+        message: "Dr. Smith updated tomorrow's surgery schedule - 3 operations rescheduled",
         sender: "Dr. Smith",
-        senderRole: "doctor",
         timestamp: new Date(Date.now() - 15 * 60 * 1000),
+        isRead: false,
+        type: "medical",
         metadata: {
           doctorId: "D-001"
         }
@@ -119,34 +105,33 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
       {
         id: "3",
         title: "Lab Results Available",
-        description: "Patient Emily's blood work shows abnormal results requiring follow-up",
+        message: "Patient Emily's blood work shows abnormal results requiring follow-up",
         sender: "Lab Department",
-        senderRole: "lab-tech",
         timestamp: new Date(Date.now() - 45 * 60 * 1000),
+        isRead: false,
+        type: "medical",
         metadata: {
-          patientId: "P-002",
-          labResultId: "L-001",
-          medicalTerms: ["blood work", "abnormal", "follow-up"]
+          patientId: "P-002"
         }
       },
       {
         id: "4",
         title: "Appointment Booking",
-        description: "5 new appointments booked for this week",
+        message: "5 new appointments booked for this week",
         sender: "Booking System",
-        senderRole: "system",
         timestamp: new Date(Date.now() - 30 * 60 * 1000),
-        metadata: {
-          appointmentId: "A-001"
-        }
+        isRead: false,
+        type: "appointment",
+        metadata: {}
       },
       {
         id: "5",
         title: "Medication Reminder",
-        description: "Patient reminder: Take morning medication",
+        message: "Patient reminder: Take morning medication",
         sender: "Reminder System",
-        senderRole: "system",
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000)
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+        isRead: false,
+        type: "reminder"
       }
     ];
 
@@ -268,9 +253,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
     }
 
     if (aiService.current) {
-      const startTime = actionStartTimes.current.get(notificationId) || Date.now();
-      const responseTime = Date.now() - startTime;
-      aiService.current.recordUserAction(notificationId, action, responseTime);
+      aiService.current.recordUserAction(notificationId, action);
     }
   }, []);
 
@@ -282,18 +265,6 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
   // Filter by category
   const getNotificationsByCategory = useCallback((category: ProcessedNotification['category']) => {
     return notifications.filter(n => n.category === category);
-  }, [notifications]);
-
-  // Get high priority notifications
-  const getHighPriorityNotifications = useCallback(() => {
-    return notifications.filter(n => n.aiPriority >= 4);
-  }, [notifications]);
-
-  // Filter by role
-  const getNotificationsForRole = useCallback((role: string) => {
-    return notifications.filter(n => 
-      n.suggestedRole.includes(role) || n.suggestedRole.includes('all')
-    );
   }, [notifications]);
 
   // Calculate unread count
@@ -314,7 +285,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
     isLoading,
     error,
     settings,
-    
+
     // Actions
     processNotification,
     processMultipleNotifications,
@@ -324,12 +295,10 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
     updateSettings,
     recordUserAction,
     refreshNotifications,
-    
+
     // Filtering and sorting
     getNotificationsByType,
-    getNotificationsByCategory,
-    getHighPriorityNotifications,
-    getNotificationsForRole
+    getNotificationsByCategory
   };
 };
 
