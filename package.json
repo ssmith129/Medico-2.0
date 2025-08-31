@@ -33,7 +33,7 @@
     "@types/react-slick": "^0.23.13",
     "@types/react-star-ratings": "^2.3.3",
     "@vitejs/plugin-react": "^4.6.0",
-    "antd": "^6.0.0",
+    "antd": "^5.26.5",
     "apexcharts": "^4.7.0",
     "bootstrap": "^5.3.7",
     "clipboard-copy": "^4.0.1",
