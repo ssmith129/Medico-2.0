@@ -390,7 +390,7 @@ const Sidebar = () => {
                                                 const isSubSubActive =
                                                   items?.submenuItems
                                                     ?.map(
-                                                      (link: any) => link.link
+                                                      (link: any, linkIndex: number) => link.link
                                                     )
                                                     .includes(
                                                       Location.pathname
