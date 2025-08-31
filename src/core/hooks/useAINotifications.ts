@@ -160,7 +160,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
   useEffect(() => {
     if (autoRefresh) {
       refreshNotifications();
-      
+
       refreshTimer.current = setInterval(() => {
         refreshNotifications();
       }, refreshInterval);
@@ -171,7 +171,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
         }
       };
     }
-  }, [autoRefresh, refreshInterval, refreshNotifications]);
+  }, [autoRefresh, refreshInterval]); // Removed refreshNotifications to prevent infinite loop
 
   // Realtime updates simulation
   useEffect(() => {
@@ -187,7 +187,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [enableRealtime, refreshNotifications]);
+  }, [enableRealtime]); // Removed refreshNotifications to prevent infinite loop
 
   // Process single notification
   const processNotification = useCallback((notification: NotificationInput): ProcessedNotification => {
