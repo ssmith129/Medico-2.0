@@ -4,8 +4,8 @@ import { Link } from "react-router";
 import AINotificationsFeed from './ai-notifications-feed';
 import NotificationDetailView from './notification-detail-view';
 import AINotificationSettings from './ai-notification-settings';
-import useAINotifications from '../../../../core/hooks/useAINotifications';
-import ImageWithBasePath from '../../../../../core/imageWithBasePath';
+import useAINotifications from '../../../../../../core/hooks/useAINotifications';
+import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
 
 interface EnhancedNotificationsProps {
   userRole?: string;
