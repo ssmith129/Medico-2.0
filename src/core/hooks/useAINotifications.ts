@@ -155,7 +155,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
     } finally {
       setIsLoading(false);
     }
-  }, []); // Removed fetchNotifications dependency to prevent infinite loop
+  }, [fetchNotifications]); // fetchNotifications is stable so this is safe
 
   // Auto-refresh setup
   useEffect(() => {
