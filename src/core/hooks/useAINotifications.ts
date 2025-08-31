@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { AINotificationService, NotificationInput, ProcessedNotification, AISettings } from '../services/ai-notification-service';
+import { AINotificationService } from '../services/ai-notification-service';
+import type { NotificationInput, ProcessedNotification, AISettings } from '../services/ai-notification-service';
 
 interface UseAINotificationsOptions {
   settings?: Partial<AISettings>;
