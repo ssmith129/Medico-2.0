@@ -76,14 +76,15 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    // Mock notification data
+    // Mock notification data - generate with current timestamp to simulate real data
+    const baseTime = Date.now();
     const mockNotifications: NotificationInput[] = [
       {
         id: "1",
         title: "Emergency Patient Alert",
         message: "Patient John Doe shows critical vitals - immediate attention required",
         sender: "Emergency System",
-        timestamp: new Date(Date.now() - 5 * 60 * 1000),
+        timestamp: new Date(baseTime - 5 * 60 * 1000),
         isRead: false,
         type: "urgent",
         metadata: {
@@ -95,7 +96,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
         title: "Surgery Schedule Updated",
         message: "Dr. Smith updated tomorrow's surgery schedule - 3 operations rescheduled",
         sender: "Dr. Smith",
-        timestamp: new Date(Date.now() - 15 * 60 * 1000),
+        timestamp: new Date(baseTime - 15 * 60 * 1000),
         isRead: false,
         type: "medical",
         metadata: {
@@ -107,7 +108,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
         title: "Lab Results Available",
         message: "Patient Emily's blood work shows abnormal results requiring follow-up",
         sender: "Lab Department",
-        timestamp: new Date(Date.now() - 45 * 60 * 1000),
+        timestamp: new Date(baseTime - 45 * 60 * 1000),
         isRead: false,
         type: "medical",
         metadata: {
@@ -119,7 +120,7 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
         title: "Appointment Booking",
         message: "5 new appointments booked for this week",
         sender: "Booking System",
-        timestamp: new Date(Date.now() - 30 * 60 * 1000),
+        timestamp: new Date(baseTime - 30 * 60 * 1000),
         isRead: false,
         type: "appointment",
         metadata: {}
@@ -129,14 +130,14 @@ export const useAINotifications = (options: UseAINotificationsOptions = {}): Use
         title: "Medication Reminder",
         message: "Patient reminder: Take morning medication",
         sender: "Reminder System",
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+        timestamp: new Date(baseTime - 2 * 60 * 60 * 1000),
         isRead: false,
         type: "reminder"
       }
     ];
 
     return mockNotifications;
-  }, []);
+  }, []); // Empty dependencies since this is mock data
 
   // Refresh notifications
   const refreshNotifications = useCallback(async () => {
