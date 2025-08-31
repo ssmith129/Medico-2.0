@@ -52,7 +52,7 @@ const AIVisualFlags: React.FC<VisualFlagsProps> = ({
   const [selectedFlag, setSelectedFlag] = useState<FlagConfig | null>(null);
 
   // Default flag configurations
-  const defaultFlags: FlagConfig[] = [
+  const defaultFlags: FlagConfig[] = useMemo(() => [
     {
       id: 'emergency',
       name: 'Emergency',
@@ -219,10 +219,10 @@ const AIVisualFlags: React.FC<VisualFlagsProps> = ({
         iconEffect: 'heartbeat'
       }
     }
-  ];
+  ], []);
 
   // Combine default and custom flags
-  const allFlags = [...defaultFlags, ...customFlags];
+  const allFlags = useMemo(() => [...defaultFlags, ...customFlags], [defaultFlags, customFlags]);
 
   // Determine which flags apply to this notification
   useEffect(() => {
