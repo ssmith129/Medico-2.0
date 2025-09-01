@@ -264,6 +264,30 @@ class AINotificationServiceImpl implements AINotificationService {
     return items.length >= 2 && items.every((n) => n.aiCategory === 'routine' || n.aiCategory === 'informational');
   }
 
+  private groupTitle(notifications: AIEnhancedNotification[]): string {
+    const type = notifications[0].type;
+    const count = notifications.length;
+    switch (type) {
+      case 'appointment':
+        return `${count} Appointment Updates`;
+      case 'system':
+        return `${count} System Notifications`;
+      case 'medical':
+        return `${count} Medical Reports`;
+      default:
+        return `${count} Notifications`;
+    }
+  }
+
+  private groupMessage(notifications: AIEnhancedNotification[]): string {
+    const senders = [...new Set(notifications.map(n => n.sender))];
+    const type = notifications[0].type;
+    if (senders.length === 1) {
+      return `${senders[0]} sent ${notifications.length} ${type} notifications`;
+    }
+    return `${notifications.length} ${type} notifications from ${senders.length} sources`;
+  }
+
   private smartPrioritization(items: AIEnhancedNotification[]): AIEnhancedNotification[] {
     return items.sort((a, b) => {
       if (a.aiPriority !== b.aiPriority) return b.aiPriority - a.aiPriority;
