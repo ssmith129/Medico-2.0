@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Switch, Slider, Select, Radio, Checkbox, Button, Divider, Alert, Tabs } from "antd";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 interface AISettings {
   enabled: boolean;
