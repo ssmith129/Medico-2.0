@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Button, Alert, Spin, Empty, message } from 'antd';
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import AINotificationsFeed from './ai-notifications-feed';
 import NotificationDetailView from './notification-detail-view';
 import AINotificationSettings from './ai-notification-settings';
-import useAINotifications from '../../../../core/hooks/useAINotifications';
-import ImageWithBasePath from '../../../../../core/imageWithBasePath';
+import useAINotifications from '@core/hooks/useAINotifications';
+import ImageWithBasePath from '@core/imageWithBasePath';
 
 interface EnhancedNotificationsProps {
   userRole?: string;
@@ -109,7 +109,7 @@ const EnhancedNotifications: React.FC<EnhancedNotificationsProps> = ({
     localStorage.setItem('ai-notifications-guide-seen', 'true');
   }, []);
 
-  const criticalNotifications = getNotificationsByType('critical');
+  const criticalNotifications = getNotificationsByCategory('critical');
   const urgentNotifications = getNotificationsByType('urgent');
 
   if (currentView === 'settings') {
@@ -126,11 +126,7 @@ const EnhancedNotifications: React.FC<EnhancedNotificationsProps> = ({
           </Button>
         </div>
 
-        <AINotificationSettings
-          settings={settings}
-          onUpdateSettings={handleSettingsUpdate}
-          onClose={() => setCurrentView('feed')}
-        />
+        <AINotificationSettings />
       </div>
     );
   }
@@ -303,12 +299,7 @@ const EnhancedNotifications: React.FC<EnhancedNotificationsProps> = ({
 
       {/* Notifications Feed */}
       {notifications.length > 0 && (
-        <AINotificationsFeed
-          notifications={notifications}
-          onNotificationClick={handleNotificationClick}
-          onNotificationAction={recordUserAction}
-          settings={settings}
-        />
+        <AINotificationsFeed />
       )}
 
       {/* Notification Detail Modal */}
