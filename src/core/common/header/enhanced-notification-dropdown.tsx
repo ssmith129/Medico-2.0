@@ -193,7 +193,8 @@ const EnhancedNotificationDropdown: React.FC<EnhancedNotificationDropdownProps> 
     recordUserAction,
     refreshNotifications,
     getHighPriorityNotifications,
-    getNotificationsByType
+    getNotificationsByType,
+    getNotificationsByCategory
   } = useAINotifications({
     settings: {
       enabled: isAIEnabled,
