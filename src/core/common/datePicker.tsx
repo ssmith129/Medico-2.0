@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { DatePicker, Dropdown, Menu, Input } from 'antd';
+import { DatePicker, Dropdown, Input } from 'antd';
+import type { MenuProps } from 'antd';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
@@ -34,11 +35,10 @@ const PredefinedDatePicker: React.FC = () => {
     ],
   };
 
-  const handleMenuClick = ({ key }: { key: string }) => {
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
     if (key === 'Custom Range') {
       setCustomVisible(true);
-      // Trigger calendar popup manually
-      setTimeout(() => rangeRef.current?.focus(), 0);
+      setTimeout(() => rangeRef.current?.focus?.(), 0);
     } else {
       setDates(predefinedRanges[key]);
       setCustomVisible(false);
@@ -52,33 +52,20 @@ const PredefinedDatePicker: React.FC = () => {
     }
   };
 
-  const menu = (
-    <Menu
-      onClick={handleMenuClick}
-      items={[
-        ...Object.keys(predefinedRanges).map(label => ({
-          key: label,
-          label,
-        })),
-        { type: 'divider' },
-        { key: 'Custom Range', label: 'Custom Range' },
-      ]}
-    />
-  );
+  const items: MenuProps['items'] = [
+    ...Object.keys(predefinedRanges).map((label) => ({ key: label, label })),
+    { type: 'divider' },
+    { key: 'Custom Range', label: 'Custom Range' },
+  ];
 
   const displayValue = `${dates[0].format(dateFormat)} - ${dates[1].format(dateFormat)}`;
 
   return (
     <div>
-      <Dropdown menu={menu} trigger={['click']}>
-        <Input
-          readOnly
-          value={displayValue}
-          className=""
-        />
+      <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['click']}>
+        <Input readOnly value={displayValue} />
       </Dropdown>
 
-      {/* Hidden RangePicker - purely for calendar popup */}
       {customVisible && (
         <RangePicker
           open
@@ -88,9 +75,7 @@ const PredefinedDatePicker: React.FC = () => {
           value={dates}
           allowClear={false}
           style={{ position: 'absolute', top: 0, left: 0, opacity: 0, pointerEvents: 'none' }}
-          onOpenChange={(open) => {
-            if (!open) setCustomVisible(false);
-          }}
+          onOpenChange={(open) => { if (!open) setCustomVisible(false); }}
         />
       )}
     </div>
