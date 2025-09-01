@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router';
-import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
+import { Link } from 'react-router-dom';
+import ImageWithBasePath from '@core/imageWithBasePath';
 import { Badge, Progress, Card, Statistic, Timeline, Tabs, Alert, Empty, Spin } from 'antd';
-import { aiNotificationService } from '../../../../../../core/services/ai-notification-service';
-import type { AIEnhancedNotification } from '../../../../../../core/services/ai-notification-service';
+import { aiNotificationService } from '@core/services/ai-notification-service';
+import type { AIEnhancedNotification } from '@core/services/ai-notification-service';
 
 const { TabPane } = Tabs;
 
@@ -589,7 +589,7 @@ const AIInboxTriage: React.FC = () => {
                     <div className="d-flex align-items-start">
                       <div className="avatar-wrapper me-3">
                         <ImageWithBasePath
-                          src={notification.avatar}
+                          src={notification.avatar || 'assets/img/users/default-avatar.jpg'}
                           className="avatar-lg rounded-circle"
                           alt="Avatar"
                         />
