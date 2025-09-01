@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Badge, DatePicker, Select, Slider, Switch, Tooltip, Popover, Checkbox, Button } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
+import dayjs, { Dayjs } from 'dayjs';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -12,7 +13,7 @@ interface FilterState {
   };
   timeframe: {
     preset: string;
-    custom: [Date | null, Date | null];
+    custom: [Dayjs | null, Dayjs | null];
   };
   department: string[];
   sender: string[];
