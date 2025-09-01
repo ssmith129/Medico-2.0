@@ -598,7 +598,7 @@ const AIInboxTriage: React.FC = () => {
                         <div className="sender-info mb-2">
                           <span className="fw-medium text-dark">{notification.sender}</span>
                           <span className="text-muted ms-2 fs-12">
-                            • {notification.metadata?.department || 'General'}
+                            • {(notification.metadata?.department as string) || 'General'}
                           </span>
                         </div>
                         <p className="notification-message mb-3">
@@ -637,12 +637,12 @@ const AIInboxTriage: React.FC = () => {
                               )}
                               {notification.metadata.urgencyLevel && (
                                 <span className="badge bg-warning-transparent text-warning fs-10">
-                                  Urgency: {notification.metadata.urgencyLevel}
+                                  Urgency: {notification.metadata.urgencyLevel as string}
                                 </span>
                               )}
                               {notification.metadata.estimatedResponseTime && (
                                 <span className="badge bg-secondary-transparent text-secondary fs-10">
-                                  Response: {notification.metadata.estimatedResponseTime}
+                                  Response: {notification.metadata.estimatedResponseTime as string}
                                 </span>
                               )}
                             </div>

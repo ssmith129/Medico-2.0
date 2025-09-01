@@ -396,7 +396,7 @@ const AIMessageDetailView: React.FC = () => {
                       <div className="sender-info mb-3">
                         <h6 className="mb-1 fw-semibold">{message.sender}</h6>
                         <p className="text-muted mb-0 fs-14">
-                          {message.metadata?.department || 'System'} • {formatTimeAgo(message.timestamp)}
+                          {(message.metadata?.department as string) || 'System'} • {formatTimeAgo(message.timestamp)}
                         </p>
                       </div>
                       <div className="message-body">

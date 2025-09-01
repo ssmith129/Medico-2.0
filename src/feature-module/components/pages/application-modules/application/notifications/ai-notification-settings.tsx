@@ -92,8 +92,8 @@ const AINotificationSettings = () => {
   const updateSettings = (path: string, value: any) => {
     const pathArray = path.split('.');
     const newSettings = { ...settings };
-    let current = newSettings;
-    
+    let current: any = newSettings;
+
     for (let i = 0; i < pathArray.length - 1; i++) {
       current = current[pathArray[i]];
     }
