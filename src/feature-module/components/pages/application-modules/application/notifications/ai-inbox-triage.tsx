@@ -635,12 +635,12 @@ const AIInboxTriage: React.FC = () => {
                                   Patient: {notification.metadata.patientId}
                                 </span>
                               )}
-                              {notification.metadata.urgencyLevel && (
+                              {notification.metadata.urgencyLevel != null && (
                                 <span className="badge bg-warning-transparent text-warning fs-10">
                                   Urgency: {String(notification.metadata.urgencyLevel)}
                                 </span>
                               )}
-                              {notification.metadata.estimatedResponseTime && (
+                              {notification.metadata.estimatedResponseTime != null && (
                                 <span className="badge bg-secondary-transparent text-secondary fs-10">
                                   Response: {String(notification.metadata.estimatedResponseTime)}
                                 </span>
