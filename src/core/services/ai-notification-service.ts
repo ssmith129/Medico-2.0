@@ -49,6 +49,8 @@ export type AINotificationSettings = {
   enabled: boolean;
   quietHours?: { start: number; end: number }; // 0-23
   minPriority?: 'high' | 'medium' | 'low';
+  roleBasedFiltering?: { enabled: boolean; userRoles: string[]; departmentFilter: string[] };
+  categoryWeights?: Record<string, number>;
 };
 
 // Action union (handy for future reducers/analytics)
