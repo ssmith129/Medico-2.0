@@ -244,7 +244,7 @@ const EnhancedNotificationDropdown: React.FC<EnhancedNotificationDropdownProps> 
   const displayUnreadCount = isAIEnabled ? unreadCount : traditionalNotifications.length;
 
   // Critical notifications for badge styling
-  const criticalNotifications = isAIEnabled ? getNotificationsByType('critical') : [];
+  const criticalNotifications = isAIEnabled ? getNotificationsByCategory('critical') : [];
   const urgentNotifications = isAIEnabled ? getNotificationsByType('urgent') : [];
 
   const handleToggleAI = useCallback((enabled: boolean) => {
