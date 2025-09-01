@@ -685,7 +685,7 @@ const AIOnboardingWorkflow: React.FC = () => {
         <Steps current={state.currentStep} size="small">
           {onboardingSteps.map((step, index) => (
             <Step
-              key={`step-${step.id}-${index}`}
+              key={`step-${index}`}
               title={step.title}
               description={step.estimated_time}
               status={
