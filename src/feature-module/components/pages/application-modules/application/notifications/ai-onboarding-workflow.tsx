@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Steps, Card, Button, Progress, Alert, Tour, Switch, Slider, Checkbox, Rate } from 'antd';
 import type { TourProps } from 'antd';
-import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
+import ImageWithBasePath from '@core/imageWithBasePath';
 
 const { Step } = Steps;
 
