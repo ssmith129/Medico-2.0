@@ -1,6 +1,6 @@
 import { DatePicker } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Session } from "../selectOption";
 import { useState } from "react";
 
