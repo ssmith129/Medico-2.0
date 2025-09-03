@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import ImageWithBasePath from "../../../../../core/imageWithBasePath";
 import Modals from "./modals/modals";
 import SCol20Chart from "./charts/scol20";
