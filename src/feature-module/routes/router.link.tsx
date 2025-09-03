@@ -248,18 +248,18 @@ export const publicRoutes = [
   {
     path: "/",
     name: "Root",
-    element: <Navigate to={routes.dashboard} />,
+    element: <Navigate to={routes.doctordashboard} />,
     route: Route,
   },
   {
     path: "/react/template/",
     name: "TemplateRoot",
-    element: <Navigate to={routes.dashboard} />,
+    element: <Navigate to={routes.doctordashboard} />,
     route: Route,
   },
   {
     path: "*", // ✅ Catch-all route for 404s
-    element: <Navigate to={routes.dashboard} />,
+    element: <Navigate to={routes.doctordashboard} />,
     route: Route,
   },
   {
