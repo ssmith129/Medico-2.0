@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { useEffect } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetTheme, updateTheme } from "../../redux/themeSlice";
 import ImageWithBasePath from "../../imageWithBasePath";
