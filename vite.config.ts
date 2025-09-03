@@ -10,6 +10,7 @@ export default defineConfig({
     alias: {
       '@core': fileURLToPath(new URL('./src/core', import.meta.url)),
       '@feature': fileURLToPath(new URL('./src/feature-module', import.meta.url)),
+      'react-router': 'react-router-dom'
     }
   }
 })
