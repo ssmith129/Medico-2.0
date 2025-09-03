@@ -1,7 +1,7 @@
 import { DatePicker, TimePicker, type TimePickerProps } from "antd";
 import dayjs from "dayjs";
 import ImageWithBasePath from "../../../../../../core/imageWithBasePath";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { all_routes } from "../../../../../routes/all_routes";
 
 const Modals = () => {
