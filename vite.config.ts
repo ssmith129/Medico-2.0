@@ -9,8 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@core': fileURLToPath(new URL('./src/core', import.meta.url)),
-      '@feature': fileURLToPath(new URL('./src/feature-module', import.meta.url)),
-      'react-router': 'react-router-dom'
+      '@feature': fileURLToPath(new URL('./src/feature-module', import.meta.url))
     }
   }
 })
