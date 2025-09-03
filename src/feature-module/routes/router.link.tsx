@@ -83,6 +83,7 @@ import States from "../components/pages/content-modules/states/states";
 import Testimonials from "../components/pages/content-modules/testimonials/testimonials";
 import Dashboard from "../components/pages/dashboard/dashboard";
 import DoctorDahboard from "../components/pages/dashboard/doctor-dashboard/doctorDahboard";
+import SimpleDoctorDashboard from "../components/pages/dashboard/doctor-dashboard/simpleDoctorDashboard";
 import PatientDashboard from "../components/pages/dashboard/patient-dashboard/patientDashboard";
 import DoctorAppointments from "../components/pages/doctor-modules/doctor-appointments/doctorAppointments";
 import DoctorsAppointmentDetails from "../components/pages/doctor-modules/doctors-appointment-details/doctorsAppointmentDetails";
