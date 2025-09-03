@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Switch, Slider, Select, Radio, Checkbox, Button, Divider, Alert, Tabs } from "antd";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 interface AISettings {
   enabled: boolean;
@@ -92,8 +92,8 @@ const AINotificationSettings = () => {
   const updateSettings = (path: string, value: any) => {
     const pathArray = path.split('.');
     const newSettings = { ...settings };
-    let current = newSettings;
-    
+    let current: any = newSettings;
+
     for (let i = 0; i < pathArray.length - 1; i++) {
       current = current[pathArray[i]];
     }

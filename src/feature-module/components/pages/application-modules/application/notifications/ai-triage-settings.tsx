@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Switch, Slider, Select, Alert, Progress, Badge, Tabs, Modal, Rate, Input, Checkbox } from 'antd';
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 
 const { TabPane } = Tabs;
 const { Option } = Select;

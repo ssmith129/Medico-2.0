@@ -2,8 +2,8 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge, Switch, Button, Skeleton } from 'antd';
 import ImageWithBasePath from '../../imageWithBasePath';
-import useAINotifications from '../../../feature-module/components/pages/application-modules/application/notifications/../../../../core/hooks/useAINotifications';
-import { all_routes } from '../../../feature-module/routes/all_routes';
+import useAINotifications from '@core/hooks/useAINotifications';
+import { all_routes } from '@feature/routes/all_routes';
 
 interface NotificationItemProps {
   notification: any;
@@ -193,7 +193,8 @@ const EnhancedNotificationDropdown: React.FC<EnhancedNotificationDropdownProps> 
     recordUserAction,
     refreshNotifications,
     getHighPriorityNotifications,
-    getNotificationsByType
+    getNotificationsByType,
+    getNotificationsByCategory
   } = useAINotifications({
     settings: {
       enabled: isAIEnabled,
@@ -243,7 +244,7 @@ const EnhancedNotificationDropdown: React.FC<EnhancedNotificationDropdownProps> 
   const displayUnreadCount = isAIEnabled ? unreadCount : traditionalNotifications.length;
 
   // Critical notifications for badge styling
-  const criticalNotifications = isAIEnabled ? getNotificationsByType('critical') : [];
+  const criticalNotifications = isAIEnabled ? getNotificationsByCategory('critical') : [];
   const urgentNotifications = isAIEnabled ? getNotificationsByType('urgent') : [];
 
   const handleToggleAI = useCallback((enabled: boolean) => {

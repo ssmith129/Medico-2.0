@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Steps, Card, Button, Progress, Alert, Tour, Switch, Slider, Checkbox, Rate } from 'antd';
 import type { TourProps } from 'antd';
-import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
+import ImageWithBasePath from '@core/imageWithBasePath';
 
 const { Step } = Steps;
 
@@ -685,7 +685,7 @@ const AIOnboardingWorkflow: React.FC = () => {
         <Steps current={state.currentStep} size="small">
           {onboardingSteps.map((step, index) => (
             <Step
-              key={`step-${step.id}-${index}`}
+              key={`step-${index}`}
               title={step.title}
               description={step.estimated_time}
               status={

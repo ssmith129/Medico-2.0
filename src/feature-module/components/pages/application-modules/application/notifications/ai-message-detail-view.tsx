@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router';
-import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
+import { Link, useParams } from 'react-router-dom';
+import ImageWithBasePath from '@core/imageWithBasePath';
 import { Badge, Progress, Card, Timeline, Tabs, Alert, Rate, Tooltip, Modal } from 'antd';
-import { aiNotificationService } from '../../../../../../core/services/ai-notification-service';
-import type { AIEnhancedNotification } from '../../../../../../core/services/ai-notification-service';
+import { aiNotificationService } from '@core/services/ai-notification-service';
+import type { AIEnhancedNotification } from '@core/services/ai-notification-service';
 
 const { TabPane } = Tabs;
 
@@ -387,7 +387,7 @@ const AIMessageDetailView: React.FC = () => {
                   <div className="d-flex align-items-start mb-4">
                     <div className="avatar-wrapper me-3">
                       <ImageWithBasePath
-                        src={message.avatar}
+                        src={message.avatar || 'assets/img/users/default-avatar.jpg'}
                         className="avatar-lg rounded-circle"
                         alt="Sender Avatar"
                       />
@@ -396,7 +396,7 @@ const AIMessageDetailView: React.FC = () => {
                       <div className="sender-info mb-3">
                         <h6 className="mb-1 fw-semibold">{message.sender}</h6>
                         <p className="text-muted mb-0 fs-14">
-                          {message.metadata?.department || 'System'} • {formatTimeAgo(message.timestamp)}
+                          {(message.metadata?.department as string) || 'System'} • {formatTimeAgo(message.timestamp)}
                         </p>
                       </div>
                       <div className="message-body">
@@ -467,7 +467,7 @@ const AIMessageDetailView: React.FC = () => {
                   <div className="feedback-section">
                     <div className="text-center mb-3">
                       <Rate
-                        value={userFeedback}
+                        value={userFeedback ?? 0}
                         onChange={setUserFeedback}
                         allowHalf
                         character={<i className="ti ti-star-filled"></i>}

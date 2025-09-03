@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
-import ImageWithBasePath from "../../../../../../core/imageWithBasePath";
+import { Link } from "react-router-dom";
+import ImageWithBasePath from "@core/imageWithBasePath";
 import { Badge } from "antd";
 
 interface NotificationItem {

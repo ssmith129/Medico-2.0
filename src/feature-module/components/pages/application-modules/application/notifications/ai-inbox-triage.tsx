@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router';
-import ImageWithBasePath from '../../../../../../core/imageWithBasePath';
+import { Link } from 'react-router-dom';
+import ImageWithBasePath from '@core/imageWithBasePath';
 import { Badge, Progress, Card, Statistic, Timeline, Tabs, Alert, Empty, Spin } from 'antd';
-import { aiNotificationService } from '../../../../../../core/services/ai-notification-service';
-import type { AIEnhancedNotification } from '../../../../../../core/services/ai-notification-service';
+import { aiNotificationService } from '@core/services/ai-notification-service';
+import type { AIEnhancedNotification } from '@core/services/ai-notification-service';
 
 const { TabPane } = Tabs;
 
@@ -589,7 +589,7 @@ const AIInboxTriage: React.FC = () => {
                     <div className="d-flex align-items-start">
                       <div className="avatar-wrapper me-3">
                         <ImageWithBasePath
-                          src={notification.avatar}
+                          src={notification.avatar || 'assets/img/users/default-avatar.jpg'}
                           className="avatar-lg rounded-circle"
                           alt="Avatar"
                         />
@@ -598,7 +598,7 @@ const AIInboxTriage: React.FC = () => {
                         <div className="sender-info mb-2">
                           <span className="fw-medium text-dark">{notification.sender}</span>
                           <span className="text-muted ms-2 fs-12">
-                            • {notification.metadata?.department || 'General'}
+                            • {(notification.metadata?.department as string) || 'General'}
                           </span>
                         </div>
                         <p className="notification-message mb-3">
@@ -635,14 +635,14 @@ const AIInboxTriage: React.FC = () => {
                                   Patient: {notification.metadata.patientId}
                                 </span>
                               )}
-                              {notification.metadata.urgencyLevel && (
+                              {notification.metadata.urgencyLevel != null && (
                                 <span className="badge bg-warning-transparent text-warning fs-10">
-                                  Urgency: {notification.metadata.urgencyLevel}
+                                  Urgency: {String(notification.metadata.urgencyLevel)}
                                 </span>
                               )}
-                              {notification.metadata.estimatedResponseTime && (
+                              {notification.metadata.estimatedResponseTime != null && (
                                 <span className="badge bg-secondary-transparent text-secondary fs-10">
-                                  Response: {notification.metadata.estimatedResponseTime}
+                                  Response: {String(notification.metadata.estimatedResponseTime)}
                                 </span>
                               )}
                             </div>

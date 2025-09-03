@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Modal, Timeline, Steps, Tabs } from "antd";
 import ImageWithBasePath from "../../../../../../core/imageWithBasePath";
 

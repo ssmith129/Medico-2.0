@@ -743,7 +743,7 @@ const DoctorAIEnhancedMessages = () => {
                                     {conversation.lastMessage.patientInfo.criticalAlerts && (
                                       <div className="d-flex gap-1 mt-1">
                                         {conversation.lastMessage.patientInfo.criticalAlerts.slice(0, 2).map((alert, index) => (
-                                          <span key={`${selectedConversation.id}-clinical-flag-${index}`} className="badge bg-danger-transparent text-danger fs-10">
+                                          <span key={`${selectedConversation?.id || 'unknown'}-clinical-flag-${index}`} className="badge bg-danger-transparent text-danger fs-10">
                                             {alert}
                                           </span>
                                         ))}
