@@ -300,7 +300,7 @@ export const publicRoutes = [
   },
   {
     path: routes.doctordashboard,
-    element: <TestDashboard />,
+    element: <DoctorDahboard />,
     route: Route,
   },
   {
