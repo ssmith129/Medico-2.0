@@ -1,0 +1,22 @@
+/* Shared AI demo styles */
+.badge-ai { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; font-weight:600; font-size:12px }
+.badge-ai .ti { font-size:14px }
+.badge-ai-critical{ background:#ffe5e5; color:#c62828; border:1px solid #ffcdd2 }
+.badge-ai-high{ background:#fff3e0; color:#ef6c00; border:1px solid #ffe0b2 }
+.badge-ai-medium{ background:#e3f2fd; color:#1565c0; border:1px solid #bbdefb }
+.badge-ai-low{ background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9 }
+.ai-chip{ padding:2px 8px; border-radius:999px; font-size:12px; font-weight:600; }
+.ai-chip-robot{ background:linear-gradient(90deg,#00c853,#64dd17); color:#fff }
+.ai-chip-brain{ background:linear-gradient(90deg,#42a5f5,#1e88e5); color:#fff }
+.ai-chip-confidence{ background:linear-gradient(90deg,#8e24aa,#7e57c2); color:#fff }
+.ai-card{ border:1px solid rgba(0,0,0,.08); border-radius:12px; box-shadow:0 4px 14px rgba(0,0,0,.06) }
+.ai-stat{ display:flex; align-items:center; gap:8px }
+.ai-stat .dot{ width:10px; height:10px; border-radius:50% }
+.dot-critical{ background:#e53935 }
+.dot-high{ background:#fb8c00 }
+.dot-medium{ background:#1e88e5 }
+.dot-low{ background:#43a047 }
+/* pulse for critical */
+@keyframes pulse { 0%{ box-shadow:0 0 0 0 rgba(229,57,53,.4)} 70%{ box-shadow:0 0 0 10px rgba(229,57,53,0)} 100%{ box-shadow:0 0 0 0 rgba(229,57,53,0)} }
+.pulse{ animation:pulse 1.6s infinite }
+.table-ai tbody tr:hover{ background:#fafafa }
